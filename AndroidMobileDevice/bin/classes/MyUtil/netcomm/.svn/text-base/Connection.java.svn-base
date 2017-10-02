@@ -1,0 +1,359 @@
+package MyUtil.netcomm;
+
+import java.net.*;
+import java.io.*;
+
+import MyUtil.datatype.BaseType;
+import MyUtil.datatype.U32;
+
+public class Connection
+{
+    private     String              serverIP    = null;
+    private     int                 portNumber  = 0;
+
+    private     Socket              mySocket    = null;
+    protected   DataInputStream     inStream    = null;
+    protected   DataOutputStream    outStream   = null;
+
+    private     boolean             isValid     = false;
+    private     int                 timeOut     = 0;
+    
+    byte[] lengthBuf = new byte[4];
+    byte[] pkgBuffer = new byte[10];
+
+    public Connection(String ServerIP, int PortNum)
+    {
+        serverIP    = ServerIP;
+        portNumber  = PortNum;
+
+        isValid     = Open();
+    }
+
+    public Connection(String ServerIP, int PortNum, int t)
+    {
+        serverIP    = ServerIP;
+        portNumber  = PortNum;
+        timeOut     = t;
+
+        isValid     = Open();
+    }
+
+    public Connection(Socket sck)
+    {
+        try
+        {
+            mySocket  = sck;
+            inStream  = new DataInputStream(mySocket.getInputStream());
+            outStream = new DataOutputStream(mySocket.getOutputStream());
+
+            isValid = true;
+        }
+        catch (Exception e)
+        {
+            Clean();
+            //System.out.println("Connection. Cannot allocate in/out stream." + e);
+        }
+    }
+
+    public boolean reStart()
+    {
+    	isValid = Open();
+    	return isValid;
+    }
+    public boolean Open()
+    {
+        Clean();
+
+        try
+        {
+            mySocket  = new Socket(serverIP, portNumber);
+            mySocket.setTcpNoDelay(true);
+            mySocket.setSoTimeout(timeOut);
+            //mySocket.setKeepAlive(true);
+
+            inStream  = new DataInputStream(mySocket.getInputStream());
+            outStream = new DataOutputStream(mySocket.getOutputStream());
+        }
+        catch (Exception e)
+        {
+            Clean();
+            System.out.println("Connection.failed." + serverIP + "." + e);
+        }
+
+        boolean ret = true;
+
+        if (mySocket == null || inStream == null || outStream == null)
+        {
+            ret = false;
+        }
+
+        return ret;
+    }
+
+    public boolean Send(byte[] buf)
+    {
+        boolean ret = false;
+
+        if (isValid)
+        {
+            try
+            {
+                outStream.write(buf, 0, buf.length);
+                ret = true;
+            }
+            catch(Exception e)
+            {
+                isValid = false;
+                //System.out.println("Connection.Send1." + e);
+            }
+        }
+
+        return ret;
+    }
+
+    public boolean Send(byte[] buf, int length)
+    {
+        boolean ret = false;
+
+        if (isValid)
+        {
+            try
+            {
+                outStream.write(buf, 0, length);
+                ret = true;
+            }
+            catch(Exception e)
+            {
+                isValid = false;
+                //System.out.println("Connection.Send2." + e);
+            }
+        }
+
+        return ret;
+    }
+
+    public boolean Send(String msg)
+    {
+        boolean ret = false;
+
+        if (isValid)
+        {
+            try
+            {
+                outStream.writeBytes(msg);
+
+                ret = true;
+            }
+            catch(Exception e)
+            {
+                isValid = false;
+                //System.out.println("Connection.Send3." + e);
+            }
+        }
+
+        return ret;
+    }
+
+    public int Receive(byte[] buf)
+    {
+        int ret = 0;
+
+        if (isValid)
+        {
+            try
+            {
+                inStream.readFully(buf);
+
+                ret = buf.length;
+            }
+            catch(Exception e)
+            {
+                ret = -1;
+                isValid = false;
+                //System.out.println("Connection.Receive1." + e);
+            }
+        }
+
+        return ret;
+    }
+
+    public int Receive(byte[] buf, int length)
+    {
+        int ret = 0;
+
+        if (isValid)
+        {
+            try
+            {
+                inStream.readFully(buf, 0, length);
+
+                ret = length;
+            }
+            catch(Exception e)
+            {
+                ret = -1;
+                isValid = false;
+                //System.out.println("Connection.Receive2." + e);
+            }
+        }
+
+        return ret;
+    }
+
+    public void Bye(String byeMsg)
+    {
+        if (isValid)
+        {
+            Send(byeMsg);
+        }
+
+        Clean();
+    }
+
+    public void Clean()
+    {
+        isValid = false;
+
+        try
+        {
+            if (inStream != null)
+            {
+                inStream.close();
+            }
+
+            if (outStream != null)
+            {
+                outStream.flush();
+                outStream.close();
+            }
+
+            if (mySocket != null)
+            {
+                mySocket.close();
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("Connection.Clean()." + e);
+        }
+
+        inStream    = null;
+        outStream   = null;
+        mySocket    = null;
+    }
+
+    public boolean isValid()
+    {
+        return isValid;
+    }
+
+    public byte[] ReadPackage()
+    {
+        int pkgLength = 0;
+
+        try
+        {
+            inStream.readFully(lengthBuf);
+
+            pkgLength = BaseType.toInt(lengthBuf);
+
+            if (pkgLength != 0)
+            {
+            	if (pkgLength > pkgBuffer.length)
+            	{
+            		System.out.println("connect.buffer expanded, from " + pkgBuffer.length + " to " + pkgLength);
+            		pkgBuffer = new byte[pkgLength];
+            	}
+            	
+                inStream.readFully(pkgBuffer, 0, pkgLength);
+            }
+        }
+        catch (Exception e)
+        {
+            pkgBuffer = null;
+            isValid = false;
+            System.out.println("Connection.ReadPackage.failed." + e);
+        }
+
+        return pkgBuffer;
+    }
+    
+    /*
+    public byte[] ReadPackage()
+    {
+        byte[] buf = new byte[4];
+        int pkgLength = 0;
+        byte[] pkgBuffer = null;
+
+        try
+        {
+            inStream.readFully(buf);
+
+            U32 tempU32 = new U32(buf);
+
+            pkgLength = (int) tempU32.toLong();
+
+            if (pkgLength != 0)
+            {
+                pkgBuffer = new byte[pkgLength];
+
+                inStream.readFully(pkgBuffer);
+            }
+        }
+        catch (Exception e)
+        {
+            pkgBuffer = null;
+            isValid = false;
+            System.out.println("Connection.ReadPackage.failed." + e);
+        }
+
+        return pkgBuffer;
+    }
+*/
+
+    public boolean WritePackage(byte[] pkgBuffer)
+    {
+        boolean ret = true;
+       
+        byte[] lb = BaseType.toByteArray(pkgBuffer.length);
+
+        try
+        {
+            outStream.write(lb, 0, lb.length);
+            outStream.write(pkgBuffer, 0, pkgBuffer.length);
+        }
+        catch (Exception e)
+        {
+            ret = false;
+            isValid = false;
+            System.out.println("Connection.WritePackage1.failed." + e);
+        }
+
+        return ret;
+    }
+
+    public boolean WritePackage(byte[] pkgBuffer, int length)
+    {
+        boolean ret = true;
+        byte[] lb = BaseType.toByteArray(length);
+
+        try
+        {
+            outStream.write(lb, 0, lb.length);
+            outStream.write(pkgBuffer, 0, length);
+        }
+        catch (Exception e)
+        {
+            ret = false;
+            isValid = false;
+            System.out.println("Connection.WritePackage2.failed." + e);
+        }
+
+        return ret;
+    }
+    
+    public String getRemoteHostIP()
+    {
+        return mySocket.getRemoteSocketAddress().toString();
+    }
+}

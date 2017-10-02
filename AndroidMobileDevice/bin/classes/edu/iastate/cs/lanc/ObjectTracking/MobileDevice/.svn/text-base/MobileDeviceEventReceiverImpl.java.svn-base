@@ -1,0 +1,63 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice;
+
+import java.io.*;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import MyUtil.jstruct.*;
+import MyUtil.datatype.*;
+import MyUtil.netcomm.*;
+import edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO.*;
+
+public class MobileDeviceEventReceiverImpl extends EventReceiver
+{
+	public MobileDeviceEventReceiverImpl(String serverIP, int serverPort, int myID)
+	{
+		super(serverIP, serverPort, myID, NETCOMM_CONST.MOBILE_DEVICE_EVENT_RECEIVER); 
+	}
+
+    public void Process(byte[] pkgBuffer)
+    {	
+		//int EventID = (int) new U32(pkgBuffer).toLong();
+    	int EventID = BaseType.toInt(pkgBuffer);
+
+		if (EventID == DATATYPE_CONST.iADD_GEOPAGE)
+		{
+			AddGeopage(pkgBuffer);
+		}
+		else 
+		{
+			System.out.println("MobileDeviceEventReceiverImpl.Unrecognized Event ID: " + EventID);
+		}	
+    }
+    
+    private void AddGeopage(byte[] pkgBuffer)
+    {
+		ADD_GEOPAGE tmp = new ADD_GEOPAGE(pkgBuffer, 4);
+    	
+		System.out.println("add a new geopage: " + tmp.toString());
+		Geopage g = new Geopage();
+				
+		// geopage region
+		g.getRegion().setRegionShape(tmp.region.shape.getValue());
+		g.getRegion().setCenterX(tmp.region.centerX.getDoubleValue());
+		g.getRegion().setCenterY(tmp.region.centerY.getDoubleValue());
+		g.getRegion().setRadius(tmp.region.radius.getDoubleValue());
+		g.getRegion().setUpperX(tmp.region.upperX.getDoubleValue());
+		g.getRegion().setUpperY(tmp.region.upperY.getDoubleValue());
+		g.getRegion().setLowerX(tmp.region.lowerX.getDoubleValue());
+		g.getRegion().setLowerY(tmp.region.lowerY.getDoubleValue());
+		
+		// geopage trigger
+		g.getTrigger().setInOut(tmp.trigger.inOut.getValue());
+		g.getTrigger().setDirection(tmp.trigger.direction.getValue());
+		
+		// geopage URL
+		g.setURL(U8.toString(tmp.URL));
+    }
+}
+

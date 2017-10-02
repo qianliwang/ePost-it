@@ -1,0 +1,47 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class REGION extends BaseStruct
+{
+   public U8    shape =   new U8();
+   public U64    centerX =   new U64();
+   public U64    centerY =   new U64();
+   public U64    radius =   new U64();
+   public U64    upperX =   new U64();
+   public U64    upperY =   new U64();
+   public U64    lowerX =   new U64();
+   public U64    lowerY =   new U64();
+
+   public REGION()
+   {
+       Init();
+   }
+
+   public REGION(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public REGION(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iREGION);
+       Name = "REGION";
+       Field = new BaseField[8];
+
+       Field[0] = new BaseField("shape", shape);
+       Field[1] = new BaseField("centerX", centerX);
+       Field[2] = new BaseField("centerY", centerY);
+       Field[3] = new BaseField("radius", radius);
+       Field[4] = new BaseField("upperX", upperX);
+       Field[5] = new BaseField("upperY", upperY);
+       Field[6] = new BaseField("lowerX", lowerX);
+       Field[7] = new BaseField("lowerY", lowerY);
+   }
+}

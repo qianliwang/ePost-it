@@ -1,0 +1,49 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO;
+
+public class Geopage {
+
+	private Region region;
+	private Trigger trigger;
+	private String URL;
+
+	public Geopage()
+	{
+		region = new Region();
+		trigger = new Trigger();
+		URL = null;		
+	}
+	
+	public Geopage(Region region, Trigger trigger, String URL){
+		
+		this.region = region; 
+		this.trigger = trigger;
+		this.URL= URL;
+	}
+
+	public Region getRegion() {
+		return region;
+	}
+
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+
+	public Trigger getTrigger() {
+		return trigger;
+	}
+
+	public void setTrigger(Trigger trigger) {
+		this.trigger = trigger;
+	}
+
+	public String getURL() {
+		return URL;
+	}
+
+	public void setURL(String uRL) {
+		URL = uRL;
+	}
+    
+	
+	
+}

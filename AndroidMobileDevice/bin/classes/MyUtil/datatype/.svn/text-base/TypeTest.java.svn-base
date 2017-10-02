@@ -1,0 +1,14 @@
+package MyUtil.datatype;
+
+public class TypeTest
+{
+    public static void main(String[] args)
+    {
+        U64 tmp = new U64();
+        U32 low32 = new U32(1170730496);
+        U32 high32 = new U32(4);
+
+        tmp.setValue(low32, high32);
+        //System.out.println(tmp.toString());
+    }
+}

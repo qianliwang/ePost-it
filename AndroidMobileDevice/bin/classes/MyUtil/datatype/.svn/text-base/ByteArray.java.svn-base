@@ -1,0 +1,95 @@
+package MyUtil.datatype;
+public class ByteArray extends BaseType
+{
+    int ArrayType = -1;
+    int length; // just for compatible purpose. Should take away in future
+
+    public ByteArray(int size)
+    {
+        super(size);
+        init();
+    }
+
+    public ByteArray(int size, int ArrayType)
+    {
+        super(size*getSize(ArrayType));
+        this.ArrayType = ArrayType;
+        init();
+    }
+
+    public ByteArray(byte b[])
+    {
+        super(b.length);
+        init();
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i];
+        }
+    }
+
+    private void init()
+    {
+        myType = DATATYPE_CONST.ByteArray;
+        length = getLength();
+    }
+
+    // depends on the type, output its corresponding string!!!
+    public String toString()
+    {
+        switch (ArrayType)
+        {
+            //case DATATYPE_CONST.S8 : return S8.toString(this);
+            case DATATYPE_CONST.U8 : return U8.toString(this);
+            //case DATATYPE_CONST.S16 : return S16.toString(this);
+            //case DATATYPE_CONST.U16 : return U16.toString(this);
+            //case DATATYPE_CONST.S32 : return S32.toString(this);
+            //case DATATYPE_CONST.U32 : return U32.toString(this);
+            //case DATATYPE_CONST.CHAR : return CHAR.toString(this);
+            case DATATYPE_CONST.WCHAR : return WCHAR.toString(this);
+            //case DATATYPE_CONST.U64 : return U64.toString(this);
+        }
+        return U8.toString(this);
+    }
+
+    public void setArrayType(int ArrayType)
+    {
+        this.ArrayType = ArrayType;
+    }
+
+    public int getLength()
+    {
+        switch (ArrayType)
+        {
+            case DATATYPE_CONST.S8 : return Buffer.length;
+            case DATATYPE_CONST.U8 : return Buffer.length;
+            case DATATYPE_CONST.S16 : return Buffer.length/2;
+            case DATATYPE_CONST.U16 : return Buffer.length/2;
+            case DATATYPE_CONST.S32 : return Buffer.length/4;
+            case DATATYPE_CONST.U32 : return Buffer.length/4;
+            case DATATYPE_CONST.CHAR : return Buffer.length;
+            case DATATYPE_CONST.WCHAR : return Buffer.length/2;
+            case DATATYPE_CONST.U64 : return Buffer.length/8;
+        }
+
+        return Buffer.length;
+    }
+
+    public byte getByte(int index)
+    {
+        if (index < Buffer.length && index >=0)
+        {
+            return Buffer[index];
+        }
+
+        System.out.println("ByetArray.getByte(int), index = " + index);
+        return -1;
+    }
+
+    public void setByte(int index, byte newValue)
+    {
+        if (index < Buffer.length && index >=0)
+        {
+            Buffer[index] = newValue;
+        }
+    }
+}

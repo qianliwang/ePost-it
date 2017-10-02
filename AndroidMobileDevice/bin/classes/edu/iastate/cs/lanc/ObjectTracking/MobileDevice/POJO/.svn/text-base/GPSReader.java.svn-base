@@ -1,0 +1,8 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO;
+
+public abstract class GPSReader {
+
+	public abstract boolean init();
+	public abstract boolean read(TimeStampedLocation tsl);
+	public abstract boolean close();
+}

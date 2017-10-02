@@ -1,0 +1,100 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO;
+
+public class Region {
+
+	public static byte CIRCLE = 0;
+	public static byte RECTANGLE = 1;
+	
+	private byte regionShape;// 0:circle; 1:rectangle 
+	//For circle;
+	private double centerX;
+	private double centerY;
+	private double radius;
+    //For rectangle;
+	private double upperX;
+	private double upperY;
+	private double lowerX;
+	private double lowerY;
+	
+	public Region(){}
+	
+	public Region(double centerX, double centerY, double radius){
+		this.regionShape = CIRCLE;
+		this.centerX = centerX;
+		this.centerY = centerY;
+		this.radius = radius;
+	}
+	public Region(double lowerX, double lowerY, double upperX, double upperY){
+		this.regionShape = RECTANGLE;
+		this.upperX = upperX;
+		this.upperY = upperY;
+		this.lowerX = lowerX;
+		this.lowerY = lowerY;
+	}
+
+	public byte getRegionShape() {
+		return regionShape;
+	}
+
+	public void setRegionShape(byte regionShape) {
+		this.regionShape = regionShape;
+	}
+
+	public double getCenterX() {
+		return centerX;
+	}
+
+	public void setCenterX(double centerX) {
+		this.centerX = centerX;
+	}
+
+	public double getCenterY() {
+		return centerY;
+	}
+
+	public void setCenterY(double centerY) {
+		this.centerY = centerY;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public double getUpperX() {
+		return upperX;
+	}
+
+	public void setUpperX(double upperX) {
+		this.upperX = upperX;
+	}
+
+	public double getUpperY() {
+		return upperY;
+	}
+
+	public void setUpperY(double upperY) {
+		this.upperY = upperY;
+	}
+
+	public double getLowerX() {
+		return lowerX;
+	}
+
+	public void setLowerX(double lowerX) {
+		this.lowerX = lowerX;
+	}
+
+	public double getLowerY() {
+		return lowerY;
+	}
+
+	public void setLowerY(double lowerY) {
+		this.lowerY = lowerY;
+	}
+	
+	
+}

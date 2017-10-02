@@ -1,0 +1,160 @@
+package MyUtil.netcomm;
+
+import java.io.*;
+import java.net.*;
+import java.nio.ByteBuffer;
+
+import MyUtil.datatype.*;
+
+public abstract class StructuredDataReceiver extends Thread
+{
+    private Connection cnt = null;    
+    
+    private String destIP; 
+	private int port;
+	private int myID;
+	private int receiverType;
+    private boolean keepAlive;
+    protected abstract void Process(byte[] pkgBuffer);
+    
+    // used as receiver upon requested by a remote machine
+    public StructuredDataReceiver(Connection c, int type)
+    {
+        cnt = c;
+        receiverType = type;
+        keepAlive = false;
+    }
+
+    // used to initiate to request a remote machine to start a StructuredDataSender
+    public StructuredDataReceiver(String ServerIP, int PortNum, int initiatorID, int initiatorType)
+    {
+        destIP = ServerIP;
+        port = PortNum;
+        myID = initiatorID;
+        receiverType = initiatorType; 
+    	keepAlive = true;
+    	
+    	init();
+    }
+
+    private void init()
+    {
+    	cnt = new Connection(destIP, port);
+    	
+        if ( cnt.isValid() )
+        {
+            byte[] buf = new byte[101];
+            
+            byte[] tmpByte;
+            
+            //the first 4 bytes hold myID
+            tmpByte = ByteBuffer.allocate(4).putInt(myID).array();
+            buf[0] = tmpByte[0]; buf[1] = tmpByte[1]; buf[2] = tmpByte[2]; buf[3] = tmpByte[3];
+            
+            //the next 4 bytes hold receiver type: 
+            // 1. MobileDeviceRPCReceiver; 
+            // 2. GeopageServerRPCReceiver;
+            // 3. MobileDeviceEventReceiver; 
+            // 4. GeopageServerEventReceiver;  
+            tmpByte = ByteBuffer.allocate(4).putInt(receiverType).array();
+            buf[4] = tmpByte[0]; buf[5] = tmpByte[1]; buf[6] = tmpByte[2]; buf[7] = tmpByte[3];
+
+            // the rest bytes are reserved
+            for (int i=8; i<buf.length; i++)
+            {
+                buf[i] = 0;
+            }
+
+            cnt.Send(buf); 
+        }
+        else
+        {
+            System.out.println("StructureDataReceiver.Connection not valid.");
+        }
+    }
+    
+    public void run()
+    {
+        if (!cnt.isValid())
+        {
+            System.out.println("StructuredDataReceiver Terminated. Connection is not valid. ");
+
+            clean();
+            return;
+        }
+
+        do 
+        {	
+        	try
+        	{
+        		boolean done = false;
+        		while (!done)
+        		{
+        			// now receive a package
+        			//DEBUG.println("StructuredDataReceiver.waiting for " + cnt.getRemoteHostIP());
+	                byte[] pkgBuffer = cnt.ReadPackage();
+	                if ( pkgBuffer == null )
+	                {
+	                	System.out.println("StructuredDataReceiver.ReadPackage() fails. Terminated.");
+	                    done = true;
+	                    break;
+	                }
+
+	                //DEBUG.println("before: ", pkgBuffer);
+					Process(pkgBuffer);
+					//DEBUG.println("after: ", pkgBuffer);
+					
+					//send it back for RPC receiver
+					if (receiverType == NETCOMM_CONST.MOBILE_DEVICE_RPC_RECEIVER || 
+						receiverType == NETCOMM_CONST.GEOPAGE_SERVER_RPC_RECEIVER)
+					{
+						if ( !cnt.WritePackage(pkgBuffer) )
+						{
+							done = true;
+							
+							System.out.println("StructuredDataReceiver.WritePackage() fails. Terminated.");
+							break;
+						}
+					}
+	                
+	                //System.out.println("StructuredDataReceiver.Process one BS.");
+	            }
+	
+	            clean();
+	        }
+	        catch (Exception e)
+	        {
+	            System.out.println("StructuredDataReceiver." + e);
+	
+	            clean();
+	        }
+        	
+        	if (keepAlive)
+        	{	
+	        	int counter = 0;
+	        	while (!cnt.isValid())
+	        	{
+	        		try
+	        		{
+	        			sleep(NETCOMM_CONST.STRUCTURED_DATA_RECEIVER_RECONNECT_PERIOD);        		
+	        			init();
+	        			System.out.println("StructuredDataReceiver.restarting." + counter++);        			
+	        		}
+	        		catch (InterruptedException ie)
+	        		{
+	    	            System.out.println("StructuredDataReceiver.restart." + ie);    	        	
+	    	            clean();        			
+	        		}
+	        	}
+        	}
+        } while (keepAlive);
+    }
+
+    public void clean()
+    {
+        if (cnt != null)
+        {
+            cnt.Clean();
+        }
+    }
+}

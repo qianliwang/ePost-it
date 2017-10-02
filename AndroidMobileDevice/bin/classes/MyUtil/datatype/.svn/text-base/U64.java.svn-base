@@ -1,0 +1,333 @@
+package MyUtil.datatype;
+
+import java.math.BigInteger;
+//import java.nio.ByteBuffer;
+import java.nio.ByteBuffer;
+
+public class U64 extends BaseType
+{
+    public U64()
+    {
+        super(8);
+        init();
+    }
+
+    public U64(long lv)
+    {
+        super(8);
+        init();
+
+        setValue(lv);
+    }
+
+    public U64(char c)
+    {
+        super(8);
+        init();
+        setValue(new U32(c));
+    }
+
+    public U64(byte b[])
+    {
+        super(8);
+        init();
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i];
+        }
+    }
+
+    public U64(byte b[], int offset)
+    {
+        super(8);
+        init();
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i+offset];
+        }
+    }
+
+    private void init()
+    {
+        myType = DATATYPE_CONST.U64;
+    }
+
+    // new api
+    public U64(U32 low32, U32 high32)
+    {
+        super(8);
+        init();
+
+        setValue(low32, high32);
+    }
+
+    public U64(long low32, long high32)
+    {
+        super(8);
+        init();
+
+        U32 low = new U32((int) low32);
+        U32 high = new U32((int) high32);
+
+        setValue(low, high);
+    }
+
+    public void setValue(U32 low32)
+    {
+        byte[] l = low32.toBytes();
+        Buffer[0] = l[0];
+        Buffer[1] = l[1];
+        Buffer[2] = l[2];
+        Buffer[3] = l[3];
+        Buffer[4] = 0;
+        Buffer[5] = 0;
+        Buffer[6] = 0;
+        Buffer[7] = 0;
+    }
+
+    public boolean setValue(byte[] b)
+    {
+    	for (int i=0; i<Buffer.length; i++)
+    	{
+    		Buffer[i] = b[i];
+    	}
+    	
+    	return true;
+    }
+    
+    public void setValue(U32 low32, U32 high32)
+    {
+        byte[] l = low32.toBytes();
+        byte[] h = high32.toBytes();
+
+        Buffer[0] = l[0];
+        Buffer[1] = l[1];
+        Buffer[2] = l[2];
+        Buffer[3] = l[3];
+        Buffer[4] = h[0];
+        Buffer[5] = h[1];
+        Buffer[6] = h[2];
+        Buffer[7] = h[3];
+    }
+
+    public void setValue(String s)
+    {
+    	setValue(Long.decode(s));
+    }
+    
+    public void setValue(long lv)
+    {
+    	//byte[] b = ByteBuffer.allocate(8).putLong(lv).array();
+    	
+        Buffer[0] = (byte)((lv >> 56) & 0xff);
+        Buffer[1] = (byte)((lv >> 48) & 0xff);
+        Buffer[2] = (byte)((lv >> 40) & 0xff);
+        Buffer[3] = (byte)((lv >> 32) & 0xff);
+        Buffer[4] = (byte)((lv >> 24) & 0xff);
+        Buffer[5] = (byte)((lv >> 16) & 0xff);
+        Buffer[6] = (byte)((lv >> 8 ) & 0xff);
+        Buffer[7] = (byte)((lv >> 0) & 0xff);
+    }
+
+    public long getValue()
+    {
+    	long lv = 0;
+    	
+    	for (int i=0; i<8; i++) 
+    	{
+    		lv <<= 8;
+    		lv ^= (long) Buffer[i] & 0xff;
+    	}
+    	
+    	return lv;
+    }
+
+    public void setValue(U64 b)
+    {
+        Buffer[0] = b.Buffer[0];
+        Buffer[1] = b.Buffer[1];
+        Buffer[2] = b.Buffer[2];
+        Buffer[3] = b.Buffer[3];
+        Buffer[4] = b.Buffer[4];
+        Buffer[5] = b.Buffer[5];
+        Buffer[6] = b.Buffer[6];
+        Buffer[7] = b.Buffer[7];
+    }
+
+    public BigInteger toBigInteger()
+    {
+        U32 low32 = new U32(Buffer, 0);
+        U32 high32 = new U32(Buffer, 4);
+
+        return toBigInteger(low32, high32);
+    }
+
+    public static BigInteger toBigInteger(U32 low32, U32 high32)
+    {
+        BigInteger h = BigInteger.valueOf(high32.toLong());
+        BigInteger l = BigInteger.valueOf(low32.toLong());
+
+        //System.out.println("h = " + h.toString(10));
+        //System.out.println("l = " + l.toString(10));
+        h = h.shiftLeft(32);
+
+        return h.add(l);
+    }
+
+    public double toDouble()
+    {
+        return toBigInteger().doubleValue();
+    }
+
+
+    public String toString()
+    {
+        //ByteBuffer bb = ByteBuffer.wrap(Buffer);
+        //String s = ""+ bb.getDouble();
+        
+    	String s="";
+    	for (int i=0; i<Buffer.length; i++)
+    	{
+    		s = s + " " + Buffer[i];
+    	}
+        
+        return s;
+    }
+    public static String toString(U32 low32, U32 high32)
+    {
+        return toBigInteger(low32, high32).toString(10);
+    }
+
+    public U64 plus(U64 num)
+    {
+        BigInteger x = toBigInteger();
+        BigInteger y = num.toBigInteger();
+
+        return toU64(x.add(y));
+    }
+
+    public static U64 toU64(BigInteger b)
+    {
+        BigInteger high = b.shiftRight(32);
+        BigInteger low = b.subtract(high.shiftLeft(32));
+
+        U32 high32 = new U32((int) high.longValue());
+        U32 low32 = new U32((int) low.longValue());
+
+        return new U64(low32, high32);
+    }
+
+    public U64 plus(long num)
+    {
+        return plus(toU64(BigInteger.valueOf(num)));
+    }
+
+    public U64 minus(U64 num)
+    {
+        BigInteger x = toBigInteger();
+        BigInteger y = num.toBigInteger();
+
+        return toU64(x.subtract(y));
+    }
+
+    public U64 minus(long num)
+    {
+        return minus(toU64(BigInteger.valueOf(num)));
+    }
+
+    public void add(U64 num)
+    {
+        U64 ret = plus(num);
+        for (int i=0; i<Buffer.length; i++)
+        {
+            Buffer[i] = ret.Buffer[i];
+        }
+    }
+
+    public void add(long num)
+    {
+        add(toU64(BigInteger.valueOf(num)));
+    }
+
+    public void subtract(U64 num)
+    {
+        U64 ret = minus(num);
+        for (int i=0; i<Buffer.length; i++)
+        {
+            Buffer[i] = ret.Buffer[i];
+        }
+    }
+
+    public void subtract(long num)
+    {
+        subtract(toU64(BigInteger.valueOf(num)));
+    }
+
+    public int compareTo(long num)
+    {
+        return compareTo(new U64(num));
+    }
+
+    public int compareTo(U64 num)
+    {
+        return toBigInteger().compareTo(num.toBigInteger());
+    }
+
+    public boolean greaterThan(long num)
+    {
+        return greaterThan(new U64(num));
+    }
+
+    public boolean lessThan(long num)
+    {
+        return lessThan(new U64(num));
+    }
+
+    public boolean greaterThan(U64 num)
+    {
+        boolean ret = false;
+        if (compareTo(num) > 0)
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    public boolean lessThan(U64 num)
+    {
+        boolean ret = false;
+        if (compareTo(num) < 0)
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    public boolean equals(U64 num)
+    {
+        boolean ret = false;
+        if (compareTo(num) == 0)
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    public U32 getLow32()
+    {
+        return new U32(Buffer, 0);
+    }
+
+    public U32 getHigh32()
+    {
+        return new U32(Buffer, 4);
+    }
+    
+    public double getDoubleValue()
+    {
+    	return ByteBuffer.wrap(Buffer).getDouble();    	
+    }
+}

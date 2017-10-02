@@ -1,0 +1,288 @@
+//package ct.datatype;
+package MyUtil.datatype;
+//import ct.debug.*;
+
+public class BaseStruct
+{
+    public 		byte[]    	uuID  = null;
+    
+    public 		U32    		ID    = new U32(0);
+    public 		String      Name  = null;
+
+    public 		BaseField   Field[] = null;
+
+    //abstract void Init();
+    
+    public boolean setValue(byte b[])
+    {
+        return setValue(b, 0);
+    }
+    
+    public boolean setValue(int dirRequested, byte b[])
+    {
+        return setValue(dirRequested, b, 0);
+    }
+
+    public boolean setValue(byte b[], int offset)
+    {
+        for (int i=0; i<Field.length; i++)
+        {               
+            Field[i].setValue(b, offset);
+            offset = offset + Field[i].getSize();
+        }
+
+        return true;
+    }
+
+    public boolean setValue(int dirRequested, byte b[], int offset)
+    {
+        for (int i=0; i<Field.length; i++)
+        {
+            Field[i].setValue(dirRequested, b, offset);
+            offset = offset + Field[i].getSize(dirRequested);
+        }
+
+        return true;
+    }
+    
+    public String toString()
+    {
+        String ret = "";
+
+        int fieldLen = getMaxNameLength();
+
+        for (int i=0; i<Field.length; i++)
+        {
+            String taps = "";
+            
+            for (int j=Field[i].getName().length(); j<fieldLen; j++)
+            {
+                taps = taps + ' ';
+            }
+            
+            //System.out.println(Field[i].getName() + " add " + taps.length() + " spaces" );
+            ret = ret + "\n" + Field[i].getName() + taps + "  =  " + Field[i].toString();
+        }
+
+        return ret;
+    }
+
+    public int getMaxNameLength()
+    {
+        int fieldLen = 0;
+        for (int i=0; i<Field.length; i++)
+        {
+            if ( Field[i].getMaxNameLength() > fieldLen )
+            {
+                fieldLen = Field[i].getMaxNameLength();
+            }
+        }
+
+        return fieldLen;
+    }
+    
+    public String toHexString()
+    {
+        byte b[] = toBytes();
+
+        String ret = BaseType.toHexString(b);
+
+        return ret;
+    }
+
+    public int getSize()
+    {
+        int size = 0;
+
+        for (int i=0; i<Field.length; i++)
+        {
+            size = size + Field[i].getSize();
+        }
+
+        return size;
+    }
+    
+    public int getSize(int dirRequested)
+    {
+        int size = 0;
+
+        for (int i=0; i<Field.length; i++)
+        {
+            size = size + Field[i].getSize(dirRequested);
+        }
+
+        return size;
+    }
+
+    public byte[] toBytes()
+    {
+        byte b[] = new byte[getSize()];
+        int offset = 0;
+
+        for (int i=0; i<Field.length; i++)
+        {
+            Field[i].toBytes(b, offset);
+            offset = offset + Field[i].getSize();
+        }
+
+        return b;
+    }
+
+    public byte[] toBytes(int dirRequested)
+    {
+        byte b[] = new byte[getSize(dirRequested)];
+        int offset = 0;
+
+        for (int i=0; i<Field.length; i++)
+        {
+            Field[i].toBytes(dirRequested, b, offset);
+            offset = offset + Field[i].getSize(dirRequested);
+        }
+
+        return b;
+    }
+    
+    public boolean toBytes(byte b[], int offset)
+    {
+        int i;
+        byte temp[] = toBytes();
+
+        for (i=0; i<temp.length && i<(b.length-offset); i++)
+        {
+            b[offset+i] = temp[i];
+        }
+
+        boolean ret = true;
+
+        if (i<temp.length)
+        {
+            ret = false;
+        }
+
+        return ret;
+    }
+
+    public boolean toBytes(int dirRequested, byte b[], int offset)
+    {
+        int i;
+        byte temp[] = toBytes(dirRequested);
+
+        for (i=0; i<temp.length && i<(b.length-offset); i++)
+        {
+            b[offset+i] = temp[i];
+        }
+
+        boolean ret = true;
+
+        if (i<temp.length)
+        {
+            ret = false;
+        }
+
+        return ret;
+    }
+    
+    public boolean toBytes(byte b[])
+    {
+        return toBytes(b, 0);
+    }
+
+    public boolean toBytes(int dirRequested, byte b[])
+    {
+        return toBytes(dirRequested, b, 0);
+    }
+    
+    public String getName()
+    {
+        return Name;
+    }
+
+    public BaseField getField(int i)
+    {
+        BaseField ret = null;
+
+        if ( i < Field.length )
+        {
+            ret = Field[i];
+        }
+
+        return ret;
+    }
+
+    public int getFieldsNum()
+    {
+        return Field.length;
+    }
+
+    public void reset()
+    {
+        for (int i=0; i<Field.length; i++)
+        {
+            Field[i].reset();
+        }
+    }
+
+    public U32 getID()
+    {
+        return ID;
+    }
+    
+    public BaseStruct Clone()
+    {
+        BaseStruct curCopy = new BaseStruct();
+        
+        curCopy.ID = (U32) ID.Clone();
+        
+        curCopy.Name = new String(Name);
+        
+        if (Field != null)
+        {
+            curCopy.Field = new BaseField[Field.length];
+            
+            for (int i=0; i<Field.length; i++)
+            {
+                curCopy.Field[i] = Field[i].Clone();
+            }
+        }
+        
+        return curCopy;
+    }
+    
+    public void setUUID(byte[] id)
+    {
+        uuID = id;
+    }
+    
+    public boolean equals(byte b[])
+    {
+        byte[] myB = toBytes();
+    
+        if (b != null && b.length == myB.length)
+        {
+            boolean same = true;
+            for (int i=0; i<b.length; i++)
+            {
+                if (b[i] != myB[i])
+                {
+                    return false;
+                }
+            }
+    
+            return true;
+        }
+        
+        return false;
+    }
+
+    public void delete()
+    {
+        uuID    = null;
+        ID      = null;
+        Name    = null;
+
+        for (int i=0; i<Field.length; i++)
+        {
+            Field[i].delete();
+        }
+    }
+}

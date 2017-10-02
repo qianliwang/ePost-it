@@ -1,0 +1,131 @@
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/RPC/!svn/ver/40/src/MyUtil/datatype
+END
+WCHAR.java
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/WCHAR.java
+END
+TypeTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/TypeTest.java
+END
+BaseType.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/RPC/!svn/ver/38/src/MyUtil/datatype/BaseType.java
+END
+BaseEvent.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/BaseEvent.java
+END
+BaseField.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/RPC/!svn/ver/3/src/MyUtil/datatype/BaseField.java
+END
+DATATYPE_CONST.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/RPC/!svn/ver/55/src/MyUtil/datatype/DATATYPE_CONST.java
+END
+BaseStruct.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/RPC/!svn/ver/3/src/MyUtil/datatype/BaseStruct.java
+END
+S8.java
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/S8.java
+END
+DebugWindow.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/DebugWindow.java
+END
+U8.java
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/RPC/!svn/ver/3/src/MyUtil/datatype/U8.java
+END
+OBJECT.java
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/OBJECT.java
+END
+U16.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/U16.java
+END
+ARRAY.java
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/ARRAY.java
+END
+S16.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/S16.java
+END
+CHAR.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/CHAR.java
+END
+BaseConsoleEvent.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/BaseConsoleEvent.java
+END
+U32.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/RPC/!svn/ver/40/src/MyUtil/datatype/U32.java
+END
+U64.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/RPC/!svn/ver/36/src/MyUtil/datatype/U64.java
+END
+DEBUG.java
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/RPC/!svn/ver/11/src/MyUtil/datatype/DEBUG.java
+END
+S32.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/S32.java
+END
+ByteArray.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/RPC/!svn/ver/2/src/MyUtil/datatype/ByteArray.java
+END

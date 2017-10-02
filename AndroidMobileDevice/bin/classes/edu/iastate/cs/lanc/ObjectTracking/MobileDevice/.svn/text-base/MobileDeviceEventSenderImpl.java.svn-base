@@ -1,0 +1,49 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice;
+
+import edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO.*;
+import MyUtil.datatype.*;
+import MyUtil.jstruct.*;
+import MyUtil.netcomm.*;
+import java.nio.ByteBuffer;
+
+public class MobileDeviceEventSenderImpl extends EventSender
+{
+	boolean cntValid = true;
+	
+	public MobileDeviceEventSenderImpl(String serverIP, int serverPort, int myID)
+	{
+		super(serverIP, serverPort, myID, NETCOMM_CONST.MOBILE_DEVICE_EVENT_SENDER);
+	}
+
+	public boolean UpdateLocation(MobileDeviceStatus myStatus)
+	{
+		if (!isValid()) reStart();
+		
+		if (!isValid()) 
+		{
+			DEBUG.println("UpdateLocation.fails.");
+			return false;
+		}
+
+		UPDATE_TIME_STAMPED_LOCATION tmp = new UPDATE_TIME_STAMPED_LOCATION();
+	
+		tmp.id.setValue(myStatus.getMyID());
+		
+		tmp.x.setValue(BaseType.toByteArray(myStatus.getMyLocation().getX()));
+		tmp.y.setValue(BaseType.toByteArray(myStatus.getMyLocation().getY()));
+		tmp.z.setValue(BaseType.toByteArray(myStatus.getMyLocation().getZ()));
+		tmp.t.setValue(myStatus.getMyLocation().getT());
+		
+		// now ready to execute
+		//DEBUG.println("MobileDeviceEventSender.UpdateLocation.i: " + tmp.toString());
+		Report(tmp);
+		//DEBUG.println("MobileDeviceEventSender.UpdateLocation.o: " + tmp.toString());
+		
+		if (!isValid())
+		{
+			DEBUG.println("UpdateLocation.failed.");
+		}
+		
+		return isValid();
+	}
+}

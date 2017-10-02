@@ -1,0 +1,183 @@
+package MyUtil.netcomm;
+
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.io.*;
+
+import MyUtil.datatype.*;
+
+public class StructuredDataSender
+{
+	private Connection cnt = null;
+	
+	// these data items are valid for initiator
+	private String destIP; 
+	private int port;
+	private int myID;
+	private int senderType;
+	
+	// used when requested by a remote machine 
+    public StructuredDataSender(Connection c, int type)
+    {
+        cnt = c;
+        senderType = type;
+    }
+	
+    // used by an initiator to request a remote machine to start a StructuredDataReceiver
+    public StructuredDataSender(String ServerIP, int PortNum, int initiatorID, int initiatorType)
+    {
+        destIP = ServerIP;
+        port = PortNum;
+        myID = initiatorID;
+        senderType = initiatorType; 
+ 	
+        init();
+    }
+    
+    private void init()
+    {
+    	cnt = new Connection(destIP, port);
+    	
+        if ( cnt.isValid() )
+        {
+            byte[] buf = new byte[101];
+            
+            byte[] tmpByte;
+            
+            //the first 4 bytes hold myID
+            tmpByte = ByteBuffer.allocate(4).putInt(myID).array();
+            buf[0] = tmpByte[0]; buf[1] = tmpByte[1]; buf[2] = tmpByte[2]; buf[3] = tmpByte[3];
+            
+            //the next 4 bytes hold sender type: 
+            // 1. MobileDeviceRPCSender; 
+            // 2. MobileDeviceEventSender; 
+            tmpByte = ByteBuffer.allocate(4).putInt(senderType).array();
+            buf[4] = tmpByte[0]; buf[5] = tmpByte[1]; buf[6] = tmpByte[2]; buf[7] = tmpByte[3];
+
+            // the rest bytes are reserved
+            for (int i=8; i<buf.length; i++)
+            {
+                buf[i] = 0;
+            }
+
+            cnt.Send(buf); 
+        }
+        else
+        {
+            System.out.println("StructureDataSender.Connection not valid.");
+        }
+    }
+
+    protected void reStart()
+    {
+    	init();
+    }
+    
+    protected boolean isValid()
+    {
+    	return cnt.isValid();    	
+    }
+    
+    protected boolean Send(BaseStruct bs)
+    {
+        byte[] pkgLen = BaseType.toByteArray(bs.getSize() + 4);
+        byte[] cmdID  = bs.getID().toBytes();
+        byte[] cmdBuf = bs.toBytes();
+
+        if (cnt.isValid() != true)
+        {
+        	DEBUG.println("StructuredDataSender.Send.cnt.isValid().Error");        	
+        	return false;
+        }
+        
+        // send package length
+        if ( cnt.Send(pkgLen) != true )
+        {
+            DEBUG.println("StructuredDataSender.Send(pkgLen).Error" );
+            return false;
+        }
+
+        // send package ID
+        if ( cnt.Send(cmdID) != true )
+        {
+            DEBUG.println("StructuredDataSender.Send(cmdID).Error" );
+            return false;
+        }
+
+        // send package
+        if ( cnt.Send(cmdBuf) != true )
+        {
+            DEBUG.println("StructuredDataSender.Send(cmdBuf).Error" );
+            return false;
+        }
+
+        return true;
+    }
+    
+    protected boolean SendAndReceive(BaseStruct bs)
+    {
+        byte[] pkgLen = BaseType.toByteArray(bs.getSize() + 4);
+        byte[] cmdID  = bs.getID().toBytes();
+        byte[] cmdBuf = bs.toBytes();
+
+        if (cnt.isValid() != true)
+        {
+        	DEBUG.println("StructuredDataSender.Send.cnt.isValid().Error");        	
+        	return false;
+        }
+        
+        // send package length
+        if ( cnt.Send(pkgLen) != true )
+        {
+            DEBUG.println("StructuredDataSender.Send(pkgLen).Error" );
+            return false;
+        }
+
+        // send package ID
+        if ( cnt.Send(cmdID) != true )
+        {
+            DEBUG.println("StructuredDataSender.Send(cmdID).Error" );
+            return false;
+        }
+
+        // send package
+        if ( cnt.Send(cmdBuf) != true )
+        {
+            DEBUG.println("StructuredDataSender.Send(cmdBuf).Error" );
+            return false;
+        }
+
+        // recv pakckage length
+        int RecvLen = cnt.Receive(pkgLen);
+        if ( RecvLen != pkgLen.length )
+        {
+            DEBUG.println("StructuredDataSender.Receive(pkgLen).Error: " + RecvLen + " != pkgLen.length : " + pkgLen.length );
+            return false;
+        }
+
+        // recv pakckage ID
+        RecvLen = cnt.Receive(cmdID);
+        if ( RecvLen != cmdID.length )
+        {
+            DEBUG.println("StructuredDataSender.Receive.(cmdID).Error : " + RecvLen + " != cmdID.length : " + cmdID.length );
+            return false;
+        }
+
+        // recv pakckage
+        RecvLen = cnt.Receive(cmdBuf);
+        if ( RecvLen != cmdBuf.length )
+        {
+            DEBUG.println("CommandServiceConnection.Receive(cmdBuf).Error : " + RecvLen + " != cmdBuf.length : " + cmdBuf.length );
+            return false;
+        }
+
+        bs.setValue(cmdBuf);
+
+        return true;
+    }
+    
+    public void close()
+    {
+    	cnt.Clean();
+    }
+}

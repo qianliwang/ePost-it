@@ -1,0 +1,110 @@
+package MyUtil.datatype;
+//package ct.datatype;
+
+public class BaseEvent
+{
+    int      EventID;
+    String   NetIP;
+    
+    public BaseEvent(byte[] EventPkg)
+    {
+        U32 tempID = new U32(EventPkg);
+        
+        EventID = (int) tempID.toLong();
+        NetIP   = new String(EventPkg, 4, DATATYPE_CONST.MAX_LEN);
+        NetIP   = NetIP.trim();
+    }
+    
+    public String getNetIP()
+    {
+        return NetIP;
+    }
+    
+    public static String getNetIP( byte[] EventPkg )
+    {
+        BaseEvent tempBE = new BaseEvent(EventPkg);
+        
+        return tempBE.getNetIP();
+    }
+
+    public int getEventID()
+    {
+        return EventID;
+    }
+    
+    public boolean isAgentHeartbeatEvent()
+    {
+        boolean ret = false;
+        
+        if ( EventID == DATATYPE_CONST.EVENT_ID_AGENT_HEARTBEAT )
+        {
+            ret = true;
+        }
+        
+        return ret;
+    }
+    
+    public boolean isConsoleHeartbeatEvent()
+    {
+        boolean ret = false;
+        
+        if ( EventID == DATATYPE_CONST.EVENT_ID_CONSOLE_HEARTBEAT )
+        {
+            ret = true;
+        }
+        
+        return ret;
+    }
+    
+    public boolean isFrom(String myIP)
+    {
+        boolean ret = false;
+        
+        if ( NetIP.equals(myIP) )
+        {
+            ret = true;
+        }
+        
+        return ret;
+    }
+    
+    public static boolean isAgentHeartbeatEvent(byte[] EventPkg)
+    {
+        BaseEvent tempBE = new BaseEvent(EventPkg);
+        
+        return tempBE.isAgentHeartbeatEvent();
+    }
+
+    public static boolean isConsoleHeartbeatEvent(byte[] EventPkg)
+    {
+        BaseEvent tempBE = new BaseEvent(EventPkg);
+        
+        return tempBE.isConsoleHeartbeatEvent();
+    }
+    
+    public boolean isAgentEvent()
+    {
+        boolean ret = false;
+        
+        if ( EventID >= DATATYPE_CONST.AGENT_EVENT_START_ID && 
+             EventID <= DATATYPE_CONST.AGENT_EVENT_LAST_ID )
+        {
+            ret = true;
+        }
+        
+        return ret;
+    }
+    
+    public boolean isConsoleEvent()
+    {
+        boolean ret = false;
+        
+        if ( EventID >= DATATYPE_CONST.CONSOLE_EVENT_START_ID && 
+             EventID <= DATATYPE_CONST.CONSOLE_EVENT_LAST_ID )
+        {
+            ret = true;
+        }
+        
+        return ret;
+    }
+}

@@ -1,0 +1,28 @@
+package MyUtil.datatype;
+
+//package ct.datatype;
+
+public class BaseConsoleEvent extends BaseEvent
+{
+    int PortNum;
+    
+    public BaseConsoleEvent(byte[] EventPkg)
+    {
+        super(EventPkg);
+        U32 tempPortNum = new U32( EventPkg, 4 + DATATYPE_CONST.MAX_LEN );
+        
+        PortNum = (int) tempPortNum.toLong();       
+    }
+    
+    public int getPortNum()
+    {
+        return PortNum;
+    }
+    
+    public static int getPortNum( byte[] EventPkg )
+    {
+        BaseConsoleEvent bce = new BaseConsoleEvent(EventPkg);
+        
+        return bce.getPortNum();
+    }
+}

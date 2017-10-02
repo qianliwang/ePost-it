@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/myZone" />
+
+        <EditText
+            android:id="@+id/editTextMyZone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/myLoad" />
+
+        <EditText
+            android:id="@+id/editTextMyLoad"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/serverIP_and_port" />
+
+        <EditText
+            android:id="@+id/editTextServerInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RadioGroup
+            android:id="@+id/radioPowerMode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RadioButton
+                android:id="@+id/radioInCharging"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/incharging" />
+
+            <RadioButton
+                android:id="@+id/radioBattery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/battery" />
+        </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/radioUpdatePolicy"
+                android:layout_width="fill_parent"
+                android:paddingLeft="20dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/radioOnDemand"
+                    android:layout_width="164dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/on_demand" />
+
+                <RadioButton
+                    android:id="@+id/radioPeriodic"
+                    android:layout_width="124dp"
+                    android:layout_height="wrap_content"
+                    android:checked = "true"
+                    android:text="@string/periodic" />
+
+            </RadioGroup>
+            
+       
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:paddingLeft="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="94dp"
+                android:layout_height="wrap_content"
+                android:text="@string/mintime" />
+
+            <EditText
+                android:id="@+id/editTextMinTime"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/seconds" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:paddingLeft="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="94dp"
+                android:layout_height="wrap_content"
+                android:text="@string/mindistance" />
+
+            <EditText
+                android:id="@+id/editTextMinDistance"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/meters" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp" >
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/testdifference"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <EditText
+                android:id="@+id/editTextTestDifference"
+                android:layout_width="154dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:background="#FF8D8D8D"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.58"
+                android:onClick="onSave"
+                android:text="@string/button_save" />
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.48"
+                android:onClick="onCancel"
+                android:text="@string/button_cancel" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

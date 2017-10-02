@@ -1,0 +1,137 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/RPC/!svn/ver/57/src/MyUtil/jstruct
+END
+REQUEST_DID.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/RPC/!svn/ver/42/src/MyUtil/jstruct/REQUEST_DID.java
+END
+UPDATE_TIME_STAMPED_LOCATION.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/RPC/!svn/ver/7/src/MyUtil/jstruct/UPDATE_TIME_STAMPED_LOCATION.java
+END
+BLE_BATTERY_LEVEL.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/RPC/!svn/ver/49/src/MyUtil/jstruct/BLE_BATTERY_LEVEL.java
+END
+REPORT_BLE_ID.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/RPC/!svn/ver/56/src/MyUtil/jstruct/REPORT_BLE_ID.java
+END
+REPORT_BLE_CELLPHONE_NO_MATCH.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/RPC/!svn/ver/56/src/MyUtil/jstruct/REPORT_BLE_CELLPHONE_NO_MATCH.java
+END
+TIME_STAMPED_LOCATION.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/RPC/!svn/ver/7/src/MyUtil/jstruct/TIME_STAMPED_LOCATION.java
+END
+BLE_LINK_LOSS.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/RPC/!svn/ver/52/src/MyUtil/jstruct/BLE_LINK_LOSS.java
+END
+REQUEST_RESIDENT_DOMAIN.java
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/RPC/!svn/ver/7/src/MyUtil/jstruct/REQUEST_RESIDENT_DOMAIN.java
+END
+EASY_GEOPAGE.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/RPC/!svn/ver/54/src/MyUtil/jstruct/EASY_GEOPAGE.java
+END
+REPORT_BLE_BATTERY_LEVEL.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/RPC/!svn/ver/56/src/MyUtil/jstruct/REPORT_BLE_BATTERY_LEVEL.java
+END
+ADD_GEOPAGE.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/RPC/!svn/ver/58/src/MyUtil/jstruct/ADD_GEOPAGE.java
+END
+POINT_2D.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/RPC/!svn/ver/6/src/MyUtil/jstruct/POINT_2D.java
+END
+POINT_3D.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/RPC/!svn/ver/6/src/MyUtil/jstruct/POINT_3D.java
+END
+BLE_ID.java
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/RPC/!svn/ver/51/src/MyUtil/jstruct/BLE_ID.java
+END
+LOCATION_UPDATE_POLICY.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/RPC/!svn/ver/6/src/MyUtil/jstruct/LOCATION_UPDATE_POLICY.java
+END
+BLE_CELLPHONE_NO_MATCH.java
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/RPC/!svn/ver/50/src/MyUtil/jstruct/BLE_CELLPHONE_NO_MATCH.java
+END
+BLE_ACCELEROMETER_VALUE.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/RPC/!svn/ver/48/src/MyUtil/jstruct/BLE_ACCELEROMETER_VALUE.java
+END
+SEND_EASY_GEOPAGE.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/RPC/!svn/ver/57/src/MyUtil/jstruct/SEND_EASY_GEOPAGE.java
+END
+REPORT_BLE_LINK_LOSS.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/RPC/!svn/ver/56/src/MyUtil/jstruct/REPORT_BLE_LINK_LOSS.java
+END
+TRIGGER.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/RPC/!svn/ver/21/src/MyUtil/jstruct/TRIGGER.java
+END
+REGION.java
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/RPC/!svn/ver/6/src/MyUtil/jstruct/REGION.java
+END
+REPORT_BLE_ACCELEROMETER_VALUE.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/RPC/!svn/ver/56/src/MyUtil/jstruct/REPORT_BLE_ACCELEROMETER_VALUE.java
+END

@@ -1,0 +1,585 @@
+package MyUtil;
+
+//import ct.datatype.*;
+import java.io.*;
+
+import MyUtil.datatype.BaseType;
+
+class c2j
+{
+    static int curLine = 0;
+    static String destDir = null;
+
+    public static void main(String[] args)
+    {
+    	/* just for eclipse
+        if (args.length != 2)
+        {
+            System.out.println("Usage: java c2j filename directory");
+            System.exit(0);
+        }
+
+        destDir = args[1];
+
+        String input[];
+
+        input = ReadInput(args[0]);
+		*/
+    	
+    	String[] para = new String[2];
+    	para[0] = "C:\\Users\\yingcai\\workspace\\RPC\\src\\MyUtil\\header\\rpcheader.h";
+    	para[1] = "C:\\Users\\yingcai\\workspace\\RPC\\src\\MyUtil\\jstruct\\";
+
+        destDir = para[1];
+
+        String input[];
+
+        input = ReadInput(para[0]);
+
+        
+        String cStruct[] = EnumStruct(input);
+
+        while ( cStruct != null )
+        {
+            for (int i=0; i<cStruct.length && cStruct[i] != null; i++)
+            {
+                System.out.println(cStruct[i]);
+            }
+
+            String jLine[];
+
+            jLine = toJavaStruct(cStruct);
+
+            for (int i=0; i<jLine.length && jLine[i] != null; i++)
+            {
+                System.out.println(jLine[i]);
+            }
+
+            SaveToFile(jLine);
+
+            cStruct = EnumStruct(input);
+        }
+        
+        //System.out.println("Done. The number of Java classes generated: " + cStruct.length);
+        System.out.println("Done.");
+    }
+
+    static String[] ReadInput(String fname)
+    {
+        String temp[] = new String[3000];
+        int counter = 0;
+        boolean commentStart = false;
+
+        try
+        {
+            //DataInputStream ps = new DataInputStream(new FileInputStream(fname));
+            BufferedReader  ps = new BufferedReader(new InputStreamReader(new FileInputStream(fname)));
+
+            while ( (temp[counter] = ps.readLine()) != null )
+            {
+                //System.out.println("input = " + temp[counter]);
+                //System.out.print("output = " );
+
+                int i = -1;
+
+                if (!commentStart)
+                {
+                    i = temp[counter].indexOf("//");
+
+                    if (i != -1)
+                    {
+                        temp[counter] = temp[counter].substring(0, i);
+                        //System.out.println("found //: " + temp[counter]);
+                    }
+
+                    i = temp[counter].indexOf("/*");
+
+                    if (i != -1)
+                    {
+                        commentStart = true;
+                        temp[counter] = temp[counter].substring(0, i);
+
+                        i = temp[counter].indexOf("*/");
+
+                        if (i != -1)
+                        {
+                            commentStart = false;
+                            temp[counter] = temp[counter].substring(i+2);
+                        }
+                    }
+
+                    //System.out.println(temp[counter]);
+
+                    counter++;
+                }
+                else
+                {
+                    i = temp[counter].indexOf("*/");
+
+                    if (i != -1)
+                    {
+                        commentStart = false;
+                        temp[counter] = temp[counter].substring(i+2);
+
+                        //System.out.println(temp[counter]);
+
+                        counter++;
+                    }
+                    else
+                    {
+                        //System.out.println("");
+                    }
+                }
+            }
+
+            ps.close();
+        }
+        catch (IOException e)
+        {
+            System.out.println("ReadInput." + e);
+        }
+
+        String ret[] = new String[counter];
+        for (int i=0; i<ret.length; i++)
+        {
+            ret[i] = temp[i];
+        }
+
+        return ret;
+    }
+
+    static String[] EnumStruct(String[] input)
+    {
+        int firstLine = -1;
+        int lastLine = -1;
+
+        boolean found = false;
+
+        while ( curLine < input.length && !found )
+        {
+            String word[] = BaseType.stringTokenizer(input[curLine], ' ');
+
+            //System.out.println("line " + curLine + " " + input[curLine]);
+
+            if ( word.length != 0 && word[0] != null )
+            {
+                if ( word[0].equals("struct") )
+                {
+                    firstLine = curLine;    // find the first line
+
+                    boolean done = false;
+                    while (curLine < input.length && !done)
+                    {
+                        if (input[curLine].indexOf('}') != -1)
+                        {
+                            lastLine = curLine;
+                            done = true;
+                            found = true;
+                        }
+                        else
+                        {
+                            curLine++;
+                        }
+                    }
+                }
+                else
+                {
+                    curLine++;
+                }
+            }
+            else
+            {
+                curLine++;
+                //System.out.println("Current line: " + input[curLine]);
+            }
+        }
+
+        String ret[] = null;
+
+        if (firstLine != -1 && lastLine != -1)
+        {
+            ret = new String[lastLine - firstLine + 1];
+
+            for (int i=0; i<ret.length; i++)
+            {
+                ret[i] = input[firstLine + i];
+
+                //System.out.println(ret[i]);
+            }
+        }
+        else
+        {
+            curLine = 0;
+        }
+
+        return ret;
+    }
+
+    static String[] toJavaStruct(String[] cStruct)
+    {
+        String FieldType[] = new String[50];
+        String FieldName[] = new String[50];
+        String ItemsNum[]  = new String[50];
+        int    FieldNum = 0;
+
+        for (int i=1; i<cStruct.length; i++)
+        {
+            toJavaField(cStruct[i], FieldType, FieldName, ItemsNum, FieldNum);
+
+            if (FieldType[FieldNum] != null && FieldName[FieldNum] != null)
+            {
+                //System.out.println("type: " + FieldType[FieldNum] + "  name: " + FieldName[FieldNum] + "  item: " + ItemsNum[FieldNum]);
+                FieldNum++;
+            }
+        }
+
+        String word[] = BaseType.stringTokenizer(cStruct[0], ' ');
+        String StructName = word[1];
+
+        String temp[] = null;
+        temp = AppendLine( temp, destDir + StructName + ".java" );
+
+        temp = AppendLine( temp, "package MyUtil.jstruct;" );
+        temp = AppendLine( temp, "import MyUtil.datatype.*;" );
+        temp = AppendLine( temp, " " );
+        temp = AppendLine( temp, "public class " + StructName + " extends BaseStruct" );
+        temp = AppendLine( temp, "{" );
+
+        for ( int i=0; i<FieldNum; i++ )
+        {
+            String CurField = toJavaFieldDefinition(FieldType[i], FieldName[i], ItemsNum[i]);
+            temp = AppendLine(temp, CurField);
+        }
+
+        temp = AppendLine(temp, "");
+        temp = AppendLine(temp, "   public " + StructName + "()");
+        temp = AppendLine(temp, "   {");
+        temp = AppendLine(temp, "       Init();");
+        temp = AppendLine(temp, "   }");
+        temp = AppendLine(temp, "");
+        temp = AppendLine(temp, "   public " + StructName + "(byte b[])");
+        temp = AppendLine(temp, "   {");
+        temp = AppendLine(temp, "       Init();");
+        temp = AppendLine(temp, "       setValue(b);");
+        temp = AppendLine(temp, "   }");
+        temp = AppendLine(temp, "");
+        temp = AppendLine(temp, "   public " + StructName + "(byte b[], int offset)");
+        temp = AppendLine(temp, "   {");
+        temp = AppendLine(temp, "       Init();");
+        temp = AppendLine(temp, "       setValue(b, offset);");
+        temp = AppendLine(temp, "   }");
+        temp = AppendLine(temp, "");
+        temp = AppendLine(temp, "   void Init()");
+        temp = AppendLine(temp, "   {");
+        temp = AppendLine(temp, "       ID.setValue(DATATYPE_CONST.i" + StructName + ");");
+        temp = AppendLine(temp, "       Name = \"" + StructName + "\";");
+        temp = AppendLine(temp, "       Field = new BaseField[" + FieldNum + "];");
+        temp = AppendLine(temp, "");
+
+        for (int j=0; j<FieldNum; j++)
+        {
+            String l = "       Field[" + j + "] = new BaseField(\"" + FieldName[j] + "\", " + FieldName[j] + ");";
+            temp = AppendLine(temp, l);
+        }
+
+        // now initialize the array
+        boolean arrayInitRequired = false;
+        for ( int i=0; i<FieldNum; i++ )
+        {
+            if (  !( FieldType[i].equals("U8") ||
+                     FieldType[i].equals("S8") ||
+                     FieldType[i].equals("U16") ||
+                     FieldType[i].equals("S16") ||
+                     FieldType[i].equals("U32") ||
+                     FieldType[i].equals("S32") ||
+                     FieldType[i].equals("CHAR") ||
+                     FieldType[i].equals("WCHAR") )
+                && ( ItemsNum[i] != null ) )
+
+            arrayInitRequired = true;
+        }
+
+        if (arrayInitRequired)
+        {
+            temp = AppendLine(temp, "");
+            temp = AppendLine(temp, "       int i = 0; ");
+
+            for ( int i=0; i<FieldNum; i++ )
+            {
+                if (  !( FieldType[i].equals("U8") ||
+                         FieldType[i].equals("S8") ||
+                         FieldType[i].equals("U16") ||
+                         FieldType[i].equals("S16") ||
+                         FieldType[i].equals("U32") ||
+                         FieldType[i].equals("S32") ||
+                         FieldType[i].equals("CHAR") ||
+                         FieldType[i].equals("WCHAR") )
+                    && ( ItemsNum[i] != null ) )
+
+                {
+                    temp = AppendLine(temp, "");
+                    temp = AppendLine(temp, "       for (i=0; i<" + FieldName[i] + ".length; i++)");
+                    temp = AppendLine(temp, "       {");
+                    temp = AppendLine(temp, "           " + FieldName[i] + "[i] = new " + FieldType[i] + "();");
+                    temp = AppendLine(temp, "       }");
+                }
+            }
+        }
+
+        //if ( StructName.equals("STRUCT_PROTOCOL_STACK_CONFIG_IP") )
+        //{
+        //    temp = AppendLine(temp, "");
+        //    temp = AppendLine(temp, "       for (int i=0; i<ipGateways.length; i++)");
+        //    temp = AppendLine(temp, "       {");
+        //    temp = AppendLine(temp, "           ipGateways[i] = new STRUCT_IP_ADDRESS();");
+        //    temp = AppendLine(temp, "       }");
+        //}
+
+        temp = AppendLine(temp, "   }");
+        temp = AppendLine(temp, "}");
+
+        if (temp == null)
+        {
+            System.out.println("toJavaStruct. temp == null");
+        }
+
+        return temp;
+    }
+
+    static String[] AppendLine( String[] s, String l )
+    {
+        if ( s== null)
+        {
+            s = new String[1000];
+
+            for ( int i=0; i<s.length; i++ )
+            {
+                s[i] = null;
+            }
+        }
+
+        int i=0;
+
+        while ( s[i] != null && i<s.length )
+        {
+            i++;
+        }
+
+        if ( i == s.length)
+        {
+            String tempS[] = new String[2 * s.length];
+
+            for ( int j=0; j<tempS.length; j++ )
+            {
+                if ( j < s.length )
+                {
+                    tempS[j] = s[j];
+                }
+                else
+                {
+                    tempS[j] = null;
+                }
+            }
+
+            s = tempS;
+
+            AppendLine(s, l);
+        }
+        else
+        {
+            s[i] = l;
+        }
+
+        return s;
+    }
+
+    static void toJavaField(String sLine, String[] type, String[] name, String[] itemsNum, int c)
+    {
+        //System.out.println("toJavaField: " + sLine);
+
+        if (sLine == null)
+        {
+            return;
+        }
+
+        String word[] = BaseType.stringTokenizer(sLine, ' ');
+
+        if (word.length < 2)
+        {
+            return;
+        }
+
+        type[c] = word[0].trim();
+        if ( type[c].equals("BYTE") )
+        {
+            type[c] = new String("U8");
+        }
+        else
+        if ( type[c].equals("SBYTE") )
+        {
+            type[c] = new String("S8");
+        }
+        else
+        if ( type[c].equals("USHORT") )
+        {
+            type[c] = new String("U16");
+        }
+        else
+        if ( type[c].equals("SHORT") )
+        {
+            type[c] = new String("S16");
+        }
+        else
+        if ( type[c].equals("ULONG") )
+        {
+            type[c] = new String("U32");
+        }
+        else
+        if ( type[c].equals("LONG") )
+        {
+            type[c] = new String("S32");
+        }
+        else
+        if ( type[c].equals("HANDLE") )
+        {
+            type[c] = new String("U32");
+        }
+        else
+        if ( type[c].equals("BOOL") )
+        {
+            type[c] = new String("U32");
+        }
+        else
+        if ( type[c].equals("WORD") )
+        {
+            type[c] = new String("U16");
+        }
+        else
+        if ( type[c].equals("SWORD") )
+        {
+            type[c] = new String("S16");
+        }
+        else
+        if ( type[c].equals("DWORD") )
+        {
+            type[c] = new String("U32");
+        }
+        else
+        if ( type[c].equals("SDWORD") )
+        {
+            type[c] = new String("S32");
+        }
+
+        name[c] = word[1];
+        name[c] = name[c].replace(';', ' ');
+        name[c] = name[c].trim();
+
+        if ( name[c].indexOf('[') != -1 || name[c].indexOf(']') != -1 )
+        {
+            String s = new String(name[c]);
+
+            s = s.replace('[', ' ');
+            s = s.replace(']', ' ');
+
+            String sa[] = BaseType.stringTokenizer(s, ' ');
+
+            itemsNum[c] = sa[1].trim();
+            name[c]     = sa[0].trim();
+        }
+        else
+        {
+            itemsNum[c] = null;
+        }
+    }
+
+    static String toJavaFieldDefinition(String type, String name, String itemsNum)
+    {
+        String ret = null;
+
+        if (itemsNum != null)
+        {
+            ret =   "   public " + type + "    " + name + "[]" + " =   ";
+        }
+        else
+        {
+            ret =   "   public " + type + "    " + name + " =   ";
+        }
+
+        //System.out.println(type);
+
+        if ( type.equals("U8")      ||
+             type.equals("S8")      ||
+             type.equals("U16")     ||
+             type.equals("S16")     ||
+             type.equals("U32")     ||
+             type.equals("S32")     ||
+             type.equals("CHAR")    ||
+             type.equals("WCHAR") )
+        {
+            if ( itemsNum != null )
+            {
+                long num = -1;
+
+                try
+                {
+                    num = Long.parseLong(itemsNum);
+                }
+                catch (Exception e)
+                {
+                    itemsNum = "DATATYPE_CONST." + itemsNum;
+                }
+
+                ret = ret + type + ".CreateArray(" + itemsNum + ");";
+            }
+            else
+            {
+                ret = ret + "new " + type + "();";
+            }
+        }
+        else
+        {
+            if ( itemsNum != null )
+            {
+                long num = -1;
+
+                try
+                {
+                    num = Long.parseLong(itemsNum);
+                }
+                catch (Exception e)
+                {
+                    itemsNum = "DATATYPE_CONST." + itemsNum;
+                }
+
+                ret = ret + "new " + type + "[" + itemsNum + "];";
+            }
+            else
+            {
+                ret = ret + "new " + type + "();";
+            }
+        }
+
+        return ret;
+    }
+
+    static void SaveToFile(String[] jLine)
+    {
+        String fn = jLine[0];
+
+        try
+        {
+            PrintStream ps = new PrintStream(new FileOutputStream(fn));
+
+            for (int i=1; i<jLine.length && jLine[i] != null; i++)
+            {
+                ps.println(jLine[i]);
+            }
+
+            ps.close();
+        }
+        catch (IOException e)
+        {
+            System.out.println("SaveToFile." + e);
+        }
+    }
+}

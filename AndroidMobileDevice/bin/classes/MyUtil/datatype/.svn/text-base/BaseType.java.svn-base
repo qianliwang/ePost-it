@@ -1,0 +1,769 @@
+//package ct.datatype;
+package MyUtil.datatype;
+
+import java.nio.ByteBuffer;
+
+//import ct.debug.*;
+
+public class BaseType
+{
+    byte Buffer[];
+    int  myType = 0;
+
+    public BaseType()
+    {
+    }
+
+    public BaseType(int b)
+    {
+        Buffer = new byte[b];
+
+        for (int i=0; i<b; i++)
+        {
+            Buffer[i] = 0;
+        }
+    }
+
+    public int getSize()
+    {
+        return Buffer.length;
+    }
+
+    public static int getSize(int baseType)
+    {
+        switch (baseType)
+        {
+            case DATATYPE_CONST.S8 : return 1;
+            case DATATYPE_CONST.U8 : return 1;
+            case DATATYPE_CONST.S16 : return 2;
+            case DATATYPE_CONST.U16 : return 2;
+            case DATATYPE_CONST.S32 : return 4;
+            case DATATYPE_CONST.U32 : return 4;
+            case DATATYPE_CONST.CHAR : return 1;
+            case DATATYPE_CONST.WCHAR : return 2;
+            case DATATYPE_CONST.U64 : return 8;
+        }
+
+        return 1;
+    }
+
+    public byte[] getBuffer()
+    {
+        return Buffer;
+    }
+
+    public byte[] toBytes()
+    {
+        byte b[] = new byte[Buffer.length];
+
+        for (int i=0; i<b.length; i++)
+        {
+            b[i] = Buffer[i];
+        }
+
+        return b;
+    }
+
+    public byte[] getBytes()
+    {
+        return toBytes();
+    }
+
+    public static String toHexString(BaseType[] b)
+    {
+        String ret = "";
+
+        for (int i=0; i<b.length; i++)
+        {
+            ret = ret + " " + b[i].toHexString();
+        }
+
+        return ret;
+    }
+
+    public static String toHexString(byte[] b)
+    {
+        String ret = "";
+
+        for (int i=0; i<b.length; i++)
+        {
+            ret = ret + " " + toHexString(b[i]);
+        }
+
+        return ret;
+    }
+
+    public String toHexString()
+    {
+        String ret = "";
+
+        for (int i=0; i<Buffer.length; i++)
+        {
+            ret = ret + toHexString(Buffer[i]) + " ";
+        }
+
+        return ret;
+    }
+
+    public static String toHexString(byte b)
+    {
+        String ret;
+        int temp = b;
+
+        if (b<0)
+        {
+            temp = (int) 256 + b;
+        }
+
+        int high4 = (int) (temp / 16);
+        int low4 = (int) (temp % 16);
+
+        char h = GetHexLetter(high4); 
+        char l = GetHexLetter(low4);
+
+        ret = h+""+l;
+
+        return ret;
+    }
+
+    public static int toUnsignedByte(byte b)
+    {
+        int ret = b;
+
+        if (ret < 0)
+        {
+            ret = 256 + ret;
+        }
+
+        return ret;
+    }
+    
+    // this is interesting: 
+    // if obj is a subclass of BaseType and obj implements toString()
+    // then (BaseType obj).toString() will not called the following toString().
+    /*
+    public String toString()
+    {
+    	//System.out.println("hlkklklklfjksadjk;lfsad;jklfsadklfadklkl");
+        switch (myType)
+        {
+            case DATATYPE_CONST.U8 :
+            {
+                return ((U8)this).toString();
+            }
+            case DATATYPE_CONST.S8:
+            {
+                return ((S8)this).toString();
+            }
+            case DATATYPE_CONST.U16:
+            {
+                return ((U16)this).toString();
+            }
+            case DATATYPE_CONST.S16:
+            {
+                return ((S16)this).toString();
+            }
+            case DATATYPE_CONST.U32:
+            {
+                return ((U32)this).toString();
+            }
+            case DATATYPE_CONST.S32:
+            {
+                return ((S32)this).toString();
+            }
+            case DATATYPE_CONST.WCHAR:
+            {
+                return ((WCHAR)this).toString();
+            }
+            case DATATYPE_CONST.CHAR:
+            {
+                return ((CHAR)this).toString();
+            }
+            case DATATYPE_CONST.ByteArray:
+            {
+                return ((ByteArray)this).toString();
+            }
+            case DATATYPE_CONST.U64:
+            {
+                return ((U64)this).toString();
+            }
+            default:
+            {
+                System.out.println("BaseType.toString().unknownBaseType." + myType);
+            }
+        }
+
+        return null;
+    }
+*/
+    
+    public static String toString(ByteArray b)
+    {
+        return b.toString();
+    }
+
+    public static String toString(BaseType[] b)
+    {
+        int t=0;
+
+        if ( b == null || b.length == 0)
+        {
+            return null;
+        }
+
+        t = b[0].getType();
+
+        switch (t)
+        {
+            case DATATYPE_CONST.U8 :
+            {
+                return U8.toString( (U8[]) b);
+            }
+            case DATATYPE_CONST.S8:
+            {
+                return S8.toString( (S8[]) b);
+            }
+            case DATATYPE_CONST.U16:
+            {
+                return U16.toString( (U16[]) b);
+            }
+            case DATATYPE_CONST.S16:
+            {
+                return S16.toString( (S16[]) b);
+            }
+            case DATATYPE_CONST.U32:
+            {
+                return U32.toString( (U32[]) b);
+            }
+            case DATATYPE_CONST.S32:
+            {
+                return S32.toString( (S32[]) b);
+            }
+            case DATATYPE_CONST.WCHAR:
+            {
+                return WCHAR.toString( (WCHAR[]) b);
+            }
+            case DATATYPE_CONST.CHAR:
+            {
+                return CHAR.toString( (CHAR[]) b);
+            }
+            default:
+            {
+                System.out.println("BaseType.toString(BaseType[]).unknownBaseType." + t);
+            }
+        }
+
+        return null;
+    }
+
+    private static char GetHexLetter(int b)
+    {
+        char ret;
+
+        switch (b)
+        {
+            case 0: ret = '0';
+                    break;
+            case 1: ret = '1';
+                    break;
+            case 2: ret = '2';
+                    break;
+            case 3: ret = '3';
+                    break;
+            case 4: ret = '4';
+                    break;
+            case 5: ret = '5';
+                    break;
+            case 6: ret = '6';
+                    break;
+            case 7: ret = '7';
+                    break;
+            case 8: ret = '8';
+                    break;
+            case 9: ret = '9';
+                    break;
+            case 10: ret = 'a';
+                    break;
+            case 11: ret = 'b';
+                    break;
+            case 12: ret = 'c';
+                    break;
+            case 13: ret = 'd';
+                    break;
+            case 14: ret = 'e';
+                    break;
+            case 15: ret = 'f';
+                    break;
+
+            default:
+                    ret = '-';
+        }
+
+        return ret;
+    }
+
+    public boolean setValue(byte b[], int offset)
+    {
+        boolean ret = false;
+        int i;
+
+        for (i=0; i<(b.length - offset) && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[offset + i];
+        }
+
+        if (i == Buffer.length)
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    public boolean setValue(byte b[])
+    {
+        return setValue(b, 0);
+    }
+
+    public boolean toBytes(byte b[], int offset)
+    {
+        int i;
+
+        for (i=0; i<Buffer.length && i<(b.length-offset); i++)
+        {
+            b[offset+i] = Buffer[i];
+        }
+
+        boolean ret = true;
+
+        if (i<Buffer.length)
+        {
+            ret = false;
+        }
+
+        return ret;
+    }
+
+    public boolean toBytes(byte b[])
+    {
+        return toBytes(b, 0);
+    }
+
+    public int getType()
+    {
+        return myType;
+    }
+
+    public void setValue(String v)
+    {
+        long longV = Long.parseLong(v, 10);
+
+        switch (myType)
+        {
+            case DATATYPE_CONST.U8 :
+            {
+                U8 x = new U8(longV);
+                setValue(x.getBytes(), 0);
+                break;
+            }
+            case DATATYPE_CONST.S8:
+            {
+                S8 x = new S8(longV);
+                setValue(x.getBytes(), 0);
+                break;
+            }
+            case DATATYPE_CONST.U16:
+            {
+                U16 x = new U16(longV);
+                setValue(x.getBytes(), 0);
+                break;
+            }
+            case DATATYPE_CONST.S16:
+            {
+                S16 x = new S16(longV);
+                setValue(x.getBytes(), 0);
+                break;
+            }
+            case DATATYPE_CONST.U32:
+            {
+                U32 x = new U32((int) longV);
+                setValue(x.getBytes(), 0);
+                break;
+            }
+            case DATATYPE_CONST.S32:
+            {
+                S32 x = new S32(longV);
+                setValue(x.getBytes(), 0);
+                break;
+            }
+        }
+    }
+
+    public static byte[] toByte(ByteArray bt)
+    {
+        return bt.getBuffer();
+    }
+
+    public static byte[] toByte(BaseType b[])
+    {
+        if ( b == null || b.length == 0)
+        {
+            return null;
+        }
+
+        byte[] buf = new byte[b[0].getSize() * b.length];
+        int offset = 0;
+
+        for (int i=0; i<b.length; i++)
+        {
+            b[i].toBytes(buf, offset);
+            offset = offset + b[i].getSize();
+        }
+
+        return buf;
+    }
+
+    public static void toByte(BaseType b[], byte[] dataBuffer)
+    {
+        if ( b == null || b.length == 0 || dataBuffer == null || dataBuffer.length == 0)
+        {
+            return;
+        }
+
+        int offset = 0;
+        for (int i=0; i<b.length && dataBuffer.length < (offset + b[i].getSize()); i++)
+        {
+            b[i].toBytes(dataBuffer, offset);
+            offset = offset + b[i].getSize();
+        }
+    }
+
+    public void toByte(byte b[], int offset)
+    {
+        if (b == null) return;
+
+        for (int i=0; i<Buffer.length; i++)
+        {
+            if ( b.length < i+offset )
+            {
+                b[i+offset] = Buffer[i];
+            }
+        }
+    }
+
+    public BaseType Clone()
+    {
+        BaseType curCopy = new BaseType();
+
+        if (Buffer != null)
+        {
+            curCopy.Buffer = new byte[Buffer.length];
+            for (int i=0; i<Buffer.length; i++)
+            {
+                curCopy.Buffer[i] = Buffer[i];
+            }
+        }
+
+        curCopy.myType = myType;
+
+        return curCopy;
+    }
+
+    public void reset()
+    {
+        for (int i=0; i<Buffer.length; i++)
+        {
+            Buffer[i] = 0;
+        }
+    }
+
+    public static String[] stringParser(String s, char c)
+    {
+        s.trim();
+
+        char[] tempC = s.toCharArray();
+        int counter = 0;
+
+        for (int i=0; i<tempC.length; i++)
+        {
+            if (tempC[i] == c)
+            {
+                counter++;
+            }
+        }
+
+        String[] tempS = new String[counter+1];
+
+        int head = 0;
+        int tail = 0;
+
+        counter = 0;
+        while ( tail<tempC.length )
+        {
+            if ( tempC[tail] == c )
+            {
+                if (head <= tail-1)
+                {
+                    tempS[counter++] = new String(tempC, head, tail-head);
+                }
+                else
+                {
+                    tempS[counter++] = null;
+                }
+
+                head = tail + 1;
+            }
+
+            tail++;
+        }
+
+        if (head <= tail-1)
+        {
+            tempS[counter] = new String(tempC, head, tail-head);
+        }
+        else
+        {
+            tempS[counter] = null;
+        }
+
+        return tempS;
+    }
+
+    public static String[] stringTokenizer(String s, char c)
+    {
+        char[] tempC = s.toCharArray();
+        String[] tempS = new String[tempC.length/2 + 1];
+
+        int counter = 0;
+        int head = 0;
+        int tail = 0;
+        boolean done = false;
+
+        //System.out.println("stringTokenizer: " + s);
+        while ( head<tempC.length )
+        {
+            // try to find one word
+            while ( head<tempC.length && tempC[head] == c )
+            {
+                head++;
+            }
+
+            if ( head<tempC.length )
+            {
+                tail = head;
+
+                while ( tail<tempC.length && tempC[tail] != c)
+                {
+                    tail++;
+                }
+
+                //System.out.println("string length = " + tempC.length + " head = " + head + " tail = " + tail);
+
+                tempS[counter++] = new String(tempC, head, tail-head);
+
+                //System.out.println(tempS[counter-1]);
+
+                head = tail;
+            }
+        }
+
+        String ret[] = new String[counter];
+
+        for (int i=0; i<ret.length; i++)
+        {
+            ret[i] = tempS[i];
+        }
+
+        return ret;
+    }
+
+    public static String alignString(String input, char mark)
+    {
+        if (input == null) return null;
+        //System.out.println("input = " + input);
+
+        String[] line = BaseType.stringTokenizer(input, '\n');
+        String[] left = new String[line.length];
+        String[] right = new String[line.length];
+
+        int i;
+
+        for (i=0; i<line.length; i++)
+        {
+            String tmp[] = BaseType.stringTokenizer(line[i], mark);
+
+            if (tmp.length > 1 && tmp[0] != null && tmp[1] != null)
+            {
+                left[i] = tmp[0].trim();
+                right[i] = tmp[1].trim();
+            }
+            else
+            {
+                left[i] = "";
+                right[i] = tmp[0];
+            }
+        }
+
+        int maxLength = 0;
+        for (i=0; i<left.length; i++)
+        {
+            //System.out.println( left[i] + " length = " + left[i].length() );
+            if ( maxLength < left[i].length() )
+            {
+                maxLength = left[i].length();
+            }
+            //System.out.println("maxLength = " + maxLength);
+        }
+
+        for (i=0; i<left.length; i++)
+        {
+            String taps = "";
+
+            for (int j=left[i].length(); j<maxLength; j++)
+            {
+                taps = taps + ' ';
+            }
+
+            //System.out.println("add " + taps.length() + " spaces to " + left[i] + "!");
+            left[i] = left[i] + taps;
+        }
+
+        String ret = "";
+
+        for (i=0; i<line.length; i++)
+        {
+            if (left[i].trim().length() == 0)
+            {
+                ret = ret + right[i] + "\n";
+            }
+            else
+            {
+                ret = ret + left[i] + "  " + mark + "  " + right[i] + "\n";
+            }
+        }
+
+        return ret;
+    }
+
+    public static byte[] toBytes(String str, char c)
+    {
+        String sect[] = stringParser(str, c);
+        byte[] b = new byte[sect.length];
+
+        //for (int i=0; i<sect.length; i++)
+        //{
+        //    //System.out.println("sect[" + i + "] = " + sect[i]);
+        //}
+
+        try
+        {
+            for (int i=0; i<b.length; i++)
+            {
+                b[i] = (byte) Integer.valueOf(sect[i].trim()).intValue();
+            }
+        }
+        catch (Exception e)
+        {
+            //System.out.println("BaseType.toBytes().Exception." + e);
+            //System.out.println("BaseType.toBytes().cannot convert " + str);
+            b = null;
+        }
+
+        return b;
+    }
+
+    public static void setValue(BaseType[] bt, byte[] b)
+    {
+        if (bt != null && b != null)
+        {
+            int offset=0;
+            for (int i=0; i<bt.length && offset<b.length; i++)
+            {
+                bt[i].setValue(b, offset);
+                offset = offset + bt[i].getSize();
+            }
+        }
+    }
+
+    public static void setValue(ByteArray bt, byte[] b)
+    {
+        bt.setValue(b);
+    }
+
+    public void delete()
+    {
+        Buffer = null;
+    }
+
+	// return an array of 8 bytes given a double
+	public static byte[] toByteArray(double value) 
+	{
+	    byte[] bytes = new byte[8];
+	    ByteBuffer.wrap(bytes).putDouble(value);
+	    return bytes;
+	}
+
+	// return a double given an array of 8 bytes
+	public static double toDouble(byte[] bytes) 
+	{
+	    return ByteBuffer.wrap(bytes).getDouble();
+	}
+	
+	public static int toInt(byte[] b)
+	{
+		return ByteBuffer.wrap(b).getInt(0);
+		
+		/*
+        int low16 = (int) BaseType.toUnsignedByte(b[0]) + (int) BaseType.toUnsignedByte(b[1]) * 256;
+        int high16 = (int) BaseType.toUnsignedByte(b[2]) + (int) BaseType.toUnsignedByte(b[3]) * 256;
+
+        return (int) (high16 * 256 * 256 + low16);
+        */
+    }
+	
+	public static byte[] toByteArray(int value)
+	{
+		return ByteBuffer.allocate(4).putInt(value).array();
+	}
+	
+	public static void setValue(U8[] tmp, String s)
+	{
+		try
+		{
+			byte[] b = s.getBytes("UTF-16");
+			
+		    for (int i=0; i<tmp.length && i<b.length; i++)
+		    {
+		    	tmp[i].setValue(b[i]);
+		    }
+		} 
+		catch (Exception e)
+		{
+			System.out.println("failed to covert to byte" + s);
+		}
+	}
+	
+	public static byte[] toByteArray(U8[] tmp)
+	{
+		byte[] b = new byte[tmp.length];
+		for (int i=0; i<b.length; i++)
+		{
+			b[i] = tmp[i].getValue();			
+		}
+		
+		return b;
+	}
+	public static String toUTF16String(U8[] tmp)
+	{
+		try
+		{
+			return new String(toByteArray(tmp), "UTF-16");
+		}
+		catch (Exception e)
+		{
+			System.out.println("BaseType.toUTF16String fails.");
+		}
+		
+		return null;
+	}	
+}

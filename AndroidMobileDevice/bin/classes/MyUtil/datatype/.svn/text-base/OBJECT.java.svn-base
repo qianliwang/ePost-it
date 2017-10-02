@@ -1,0 +1,101 @@
+package MyUtil.datatype;
+
+//\project\java\ct\tools\header\Iobject.h
+public class OBJECT extends BaseStruct                              
+{                                                                   
+   public U32          cbElementSize = new U32();                 
+   public ByteArray    pData = new ByteArray(4, DATATYPE_CONST.U8);
+
+   public OBJECT()                                                  
+   {                                                                
+       Init();                                                      
+   }                                                                
+
+   public OBJECT(byte b[])                                          
+   {                                                                
+       Init();                                                      
+       setValue(b);                                                 
+
+       pData = new ByteArray((int) cbElementSize.toLong(), DATATYPE_CONST.U8);
+
+       Init();                                                      
+       setValue(b);                                                 
+   }                                                                
+
+   public OBJECT(byte b[], int offset)                              
+   {                                                                
+       Init();                                                      
+       setValue(b, offset);                                         
+
+       pData = new ByteArray((int) cbElementSize.toLong(), DATATYPE_CONST.U8);
+
+       Init();                                                      
+       setValue(b, offset);                                                 
+   }                                                                
+
+   public BaseStruct Clone()
+   {
+       return new OBJECT(toBytes());
+   }
+
+   void Init()                                                      
+   {                                                                
+       ID.setValue(DATATYPE_CONST.iOBJECT);                         
+       Name = "OBJECT";                                           
+       Field = new BaseField[2];                                    
+
+       Field[0] = new BaseField("cbElementSize", cbElementSize);  
+       Field[1] = new BaseField("pData", pData);                  
+   }                                                                
+   public boolean setValue(byte b[])                                
+   {                                                                
+      return setValue(b, 0);                                        
+   }                                                                
+                                                                    
+   public boolean setValue(byte b[], int offset)                    
+   {                                                                
+      int tmpOffset = offset;                                       
+      for (int i=0; i<Field.length; i++)                            
+      {                                                             
+          Field[i].setValue(b, tmpOffset);                          
+          tmpOffset = tmpOffset + Field[i].getSize();               
+      }                                                             
+                                                                    
+      pData = new ByteArray((int) cbElementSize.toLong(), DATATYPE_CONST.U8);
+      Field[1] = new BaseField("pData", pData);                   
+                                                                    
+      tmpOffset = offset;                                           
+      for (int i=0; i<Field.length; i++)                            
+      {                                                             
+          Field[i].setValue(b, tmpOffset);                          
+          tmpOffset = tmpOffset + Field[i].getSize();               
+      }                                                             
+                                                                    
+      return true;                                                  
+   }
+
+   public boolean setValue(int size, byte b[])
+   {
+      cbElementSize.setValue(size);
+      pData = new ByteArray((int) cbElementSize.toLong(), DATATYPE_CONST.U8);
+      Field[1] = new BaseField("pData", pData);
+      pData.setValue(b);
+      return true;
+   }                                                                
+                                                                    
+   public boolean setObject(BaseStruct bs)                          
+   {                                                                
+       cbElementSize.setValue(bs.getSize());                        
+       pData = new ByteArray((int) cbElementSize.toLong(), DATATYPE_CONST.U8);
+       Field[1] = new BaseField("pData", pData);                  
+                                                                    
+       return Field[1].setValue(bs.toBytes());                      
+   }                                                                
+      public boolean setObject(byte data[])                         
+      {                                                             
+          cbElementSize.setValue(data.length);                      
+          pData = new ByteArray((int) cbElementSize.toLong(), DATATYPE_CONST.U8);
+          Field[1] = new BaseField("pData", pData);               
+          return Field[1].setValue(data);                           
+      }                                                             
+}                                                                   

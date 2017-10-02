@@ -1,0 +1,213 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Date;
+
+import edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO.*;
+
+public class PseudoGPSReader extends GPSReader
+{
+	String myLocationFile = null;
+	TimeStampedLocation curLocation = null;	
+	ArrayList location = null;	
+	int curIndex = 0;
+	long lastSamplingTime = -1;
+	
+	public PseudoGPSReader(String locationFile)
+	{
+		myLocationFile = locationFile;
+		
+		if (myLocationFile != null)
+		{
+			location = readLocationFromFile(myLocationFile);
+		}
+	}
+	
+	public boolean init() 
+	{
+		return true;
+	}
+	
+	private ArrayList readLocationFromFile(String fname)
+	{
+		
+		ArrayList loc = new ArrayList(100000);
+		String curLine;
+		
+        try
+        {
+            BufferedReader  ps = new BufferedReader(new InputStreamReader(new FileInputStream(fname)));
+
+            // skip the sql part
+            curLine = ps.readLine();
+            while (curLine != null && !curLine.startsWith("INSERT"))
+            {
+            	curLine = ps.readLine();
+            }
+
+            // read location records one by one, each having the following format
+            // ('1', '42.02816978', '-93.64978118', '286.20001220703125', '1334005559766'),
+            curLine = ps.readLine(); 
+            while ( curLine != null)
+            {
+            	//System.out.println(curLine);
+            	
+            	char[] curChar = curLine.toCharArray();           	
+            	
+            	String temp;
+            	int j =0;
+            	int i = 0;
+            	while (curChar[i] != '\'') i++; i++;
+            	while (curChar[i] != '\'') i++; i++;
+            	while (curChar[i] != '\'') i++;
+            	
+            	// get X
+            	i++;
+            	j = i;         	
+            	while (curChar[i] != '\'') i++;
+            	temp = new String(curChar, j, i-j);            	
+            	double X = Double.parseDouble(temp);
+            	//System.out.println(temp + " -->" + X);
+            	
+            	// get Y            	
+            	i++;
+            	while (curChar[i] != '\'') i++;
+            	i++;
+            	j = i;
+            	while (curChar[i] != '\'') i++;            	
+            	temp = new String(curChar, j, i-j);
+            	double Y = Double.parseDouble(temp);
+            	//System.out.println(temp + " -->" + Y);
+            	
+            	// get Z
+            	i++;
+            	while (curChar[i] != '\'') i++;
+            	i++;
+            	j = i;
+            	while (curChar[i] != '\'') i++;            	
+            	temp = new String(curChar, j, i-j);
+            	double Z = Double.parseDouble(temp);
+            	//System.out.println(temp + " -->" + Z);
+            	
+            	// get T
+            	i++;
+            	while (curChar[i] != '\'') i++;
+            	i++;
+            	j = i;
+            	while (curChar[i] != '\'') i++;            	
+            	temp = new String(curChar, j, i-j);
+            	long T = Long.parseLong(temp);
+            	//System.out.println(temp + " -->" + T);
+            	
+            	//System.out.println("PseudoGPSReader.read location: " + X + ", " + Y + ", " + Z + ", " +  T);
+            	
+            	TimeStampedLocation curLocation = new TimeStampedLocation(X, Y, Z, T);
+            	loc.add(curLocation);
+            	
+            	curLine = ps.readLine();
+            }
+            
+            ps.close();
+            
+            // now make it a circle           
+			int index = loc.size() - 2;
+			long curTime = ((TimeStampedLocation) loc.get(index+1)).getT();
+			while (index >= 0)
+			{
+				TimeStampedLocation curLocation = (TimeStampedLocation) loc.get(index);
+				TimeStampedLocation tsl = new TimeStampedLocation(); 
+				tsl.setX(curLocation.getX());
+				tsl.setY(curLocation.getY());
+				tsl.setZ(curLocation.getZ());
+
+				long delta = ((TimeStampedLocation) loc.get(index+1)).getT() - curLocation.getT();
+				curTime = curTime + delta;
+				tsl.setT(curTime); 
+				
+				loc.add(tsl);
+				index--;
+				//System.out.println("delta = " + delta);				
+			}
+        }
+        catch (IOException e)
+        {
+            System.out.println("ReadInput." + e);
+        }
+
+        return loc;
+    }
+	
+	public boolean read(TimeStampedLocation tsl)
+	{
+		if (myLocationFile == null)
+		{
+			if (tsl.getX() == 90)
+			{
+				tsl.setX(-90);				
+			}
+			else
+			{
+				tsl.setX(tsl.getX() + 1);
+			}
+			
+			if (tsl.getY() == 180)
+			{
+				tsl.setY(-180);
+			}
+			else
+			{
+				tsl.setY(tsl.getY() + 1);
+			}
+			
+			tsl.setZ(tsl.getZ() + 1);			
+		}
+		else
+		{
+			if (curIndex == location.size() - 1)
+			{
+				curIndex = 0;
+			}
+			
+			if (curIndex != 0)
+			{
+				lastSamplingTime = curLocation.getT();				
+			}
+
+			curLocation = (TimeStampedLocation) location.get(curIndex);
+			tsl.setX(curLocation.getX());
+			tsl.setY(curLocation.getY());
+			tsl.setZ(curLocation.getZ());
+
+			if (curIndex == 0)
+			{
+				lastSamplingTime = curLocation.getT();				
+			}
+
+			System.out.println("PseudoGPSReader.curIndex = " + curIndex);
+			curIndex++;			
+		}
+
+		tsl.setT((new Date()).getTime());
+		
+		return true;
+	}
+	
+	public int getSamplingInterval()
+	{
+		if (curIndex == 0)
+		{
+			return 1;
+		}
+
+		return (int) (curLocation.getT() - lastSamplingTime);
+	}
+	
+	public boolean close()
+	{
+		return true;
+	}
+}

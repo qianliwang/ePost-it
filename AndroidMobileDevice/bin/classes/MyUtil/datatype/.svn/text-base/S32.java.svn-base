@@ -1,0 +1,158 @@
+//package ct.datatype;
+package MyUtil.datatype;
+//import ct.debug.*;
+
+public class S32 extends BaseType
+{
+    public S32()
+    {
+        super(4);
+        init();
+    }
+
+    public S32(long i)
+    {
+        super(4);
+        init();
+        setValue(i);
+    }
+
+    public S32(char c)
+    {
+        super(4);
+        init();
+        setValue(c);
+    }
+
+    public S32(byte b[])
+    {
+        super(4);
+        init();
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i];
+        }
+    }
+
+    private void init()
+    {
+        myType = DATATYPE_CONST.S32;
+    }
+
+    public boolean setValue(long i)
+    {
+        i = i % ( (long) 256 * 256 * 256 * 256 );
+
+        if (i < 0)
+        {
+            i = (long) 256 * 256 * 256 * 256 + (long) i;
+        }
+
+        long high16 = (long) (i / (256 * 256));
+        long low16 = (long) (i % (256 * 256));
+
+        Buffer[0] = (byte) (low16 % 256);
+        Buffer[1] = (byte) (low16 / 256);
+
+        Buffer[2] = (byte) (high16 % 256);
+        Buffer[3] = (byte) (high16 / 256);
+
+        return true;
+    }
+
+    public boolean setValue(char c)
+    {
+        Buffer[0] = (byte) c;
+        Buffer[1] = 0;
+        Buffer[2] = 0;
+        Buffer[3] = 0;
+
+        return true;
+    }
+
+    public long toLong()
+    {
+        long ret;
+
+        long low16 = (long) BaseType.toUnsignedByte(Buffer[0]) + (long) BaseType.toUnsignedByte(Buffer[1]) * 256;
+        long high16 = (long) BaseType.toUnsignedByte(Buffer[2]) + (long) BaseType.toUnsignedByte(Buffer[3]) * 256;
+
+        ret = high16 * 256 * 256 + low16;
+
+        if (ret > Integer.MAX_VALUE)
+        {
+            ret = ret - (long) 256 * 256 * 256 * 256;
+        }
+
+        return ret;
+    }
+
+    public char toChar()
+    {
+        return (char) Buffer[0];
+    }
+
+    public String toString()
+    {
+        String ret = "" + toLong();
+
+        return ret;
+    }
+
+    public static String toString(S32[] s)
+    {
+        String ret = "";
+
+        for (int i=0; i<s.length; i++)
+        {
+            ret = ret + s[i].toString() + " ";
+        }
+
+        return ret;
+    }
+
+    public static S32[] CreateArray(int item)
+    {
+        S32[] tempArray = new S32[item];
+
+        for (int i=0; i<tempArray.length; i++)
+        {
+            tempArray[i] = new S32(0);
+        }
+
+        return tempArray;
+    }
+
+    public void setValue(String v)
+    {
+        if (v != null)
+        {
+            long longV = Long.parseLong(v, 10);
+
+            setValue(longV);
+        }
+    }
+
+    public static void setValue(S32[] s, String v)
+    {
+        setValue(s, v, ' ');
+    }
+
+    public static void setValue(S32[] s, String v, char parser)
+    {
+        int i;
+
+        for (i=0; i<s.length; i++)
+        {
+            s[i].setValue(0);
+        }
+
+
+        String[] iV = stringParser(v, parser);
+
+        for (i=0; i<s.length && i<iV.length; i++)
+        {
+            s[i].setValue(iV[i]);
+        }
+    }
+}

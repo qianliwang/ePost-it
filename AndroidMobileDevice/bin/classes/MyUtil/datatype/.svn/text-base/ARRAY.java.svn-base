@@ -1,0 +1,82 @@
+package MyUtil.datatype;
+//\project\java\ct\tools\header\Iobject.h
+public class ARRAY extends BaseStruct                                                                  
+{                                                                                                      
+   public U32    cbElementSize =   new U32();                                                          
+   public U32    cElements =   new U32();                                                              
+   public U32    cActiveElements =   new U32();                                                        
+   public ByteArray  pData = new ByteArray(4, DATATYPE_CONST.U8);
+
+   public ARRAY()                                                                                      
+   {                                                                                                   
+       Init();                                                                                         
+   }                                                                                                   
+
+   public ARRAY(byte b[])                                                                              
+   {                                                                                                   
+       Init();                                                                                         
+       setValue(b);                                                                                    
+
+       pData = new ByteArray((int) ( cbElementSize.toLong() * cActiveElements.toLong() ), DATATYPE_CONST.U8); 
+
+       Init();                                                                                         
+       setValue(b);                                                                                    
+   }                                                                                                   
+
+   public ARRAY(byte b[], int offset)                                                                  
+   {                                                                                                   
+       Init();                                                                                         
+       setValue(b, offset);                                                                            
+
+       pData = new ByteArray((int) ( cbElementSize.toLong() * cActiveElements.toLong() ), DATATYPE_CONST.U8); 
+
+       Init();                                                                                         
+       setValue(b, offset);                                                                            
+   }                                                                                                   
+
+
+   public BaseStruct Clone()
+   {
+       return new ARRAY(toBytes());
+   }
+
+   void Init()                                                                                         
+   {                                                                                                   
+       ID.setValue(DATATYPE_CONST.iARRAY);                                                             
+       Name = "ARRAY";                                                                               
+       Field = new BaseField[4];                                                                       
+
+       Field[0] = new BaseField("cbElementSize", cbElementSize);                                     
+       Field[1] = new BaseField("cElements", cElements);                                             
+       Field[2] = new BaseField("cActiveElements", cActiveElements);                                 
+       Field[3] = new BaseField("pData", pData);                                                     
+   }                                                                                                   
+                                                                                                       
+public boolean setValue(byte b[])                                                                       
+{                                                                                                       
+    return setValue(b, 0);                                                                              
+}                                                                                                       
+                                                                                                        
+public boolean setValue(byte b[], int offset)                                                           
+{                                                                                                       
+   int tmpOffset = offset;                                                                              
+   for (int i=0; i<Field.length; i++)                                                                   
+   {                                                                                                    
+       Field[i].setValue(b, tmpOffset);                                                                 
+       tmpOffset = tmpOffset + Field[i].getSize();                                                      
+   }                                                                                                    
+                                                                                                        
+   pData = new ByteArray((int) ( cbElementSize.toLong() * cActiveElements.toLong() ), DATATYPE_CONST.U8); 
+                                                                                                        
+   Field[3] = new BaseField("pData", pData);                                                            
+                                                                                                        
+   tmpOffset = offset;                                                                                  
+   for (int i=0; i<Field.length; i++)                                                                   
+   {                                                                                                    
+       Field[i].setValue(b, tmpOffset);                                                                 
+       tmpOffset = tmpOffset + Field[i].getSize();                                                      
+  }                                                                                                     
+                                                                                                        
+  return true;                                                                                          
+}                                                                                                       
+}                                                                                                       

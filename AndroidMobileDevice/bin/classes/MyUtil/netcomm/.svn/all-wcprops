@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/RPC/!svn/ver/44/src/MyUtil/netcomm
+END
+StructuredDataSender.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/RPC/!svn/ver/44/src/MyUtil/netcomm/StructuredDataSender.java
+END
+EventSender.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/RPC/!svn/ver/23/src/MyUtil/netcomm/EventSender.java
+END
+Connection.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/RPC/!svn/ver/34/src/MyUtil/netcomm/Connection.java
+END
+NETCOMM_CONST.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/RPC/!svn/ver/23/src/MyUtil/netcomm/NETCOMM_CONST.java
+END
+StructuredDataReceiver.java
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/RPC/!svn/ver/41/src/MyUtil/netcomm/StructuredDataReceiver.java
+END
+RPCSender.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/RPC/!svn/ver/23/src/MyUtil/netcomm/RPCSender.java
+END
+EventReceiver.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/RPC/!svn/ver/23/src/MyUtil/netcomm/EventReceiver.java
+END
+EventProcessor.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/RPC/!svn/ver/23/src/MyUtil/netcomm/EventProcessor.java
+END
+JavaServer.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/RPC/!svn/ver/32/src/MyUtil/netcomm/JavaServer.java
+END
+RPCReceiver.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/RPC/!svn/ver/23/src/MyUtil/netcomm/RPCReceiver.java
+END
+ConnectionReception.java
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/RPC/!svn/ver/2/src/MyUtil/netcomm/ConnectionReception.java
+END

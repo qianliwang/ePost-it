@@ -1,0 +1,35 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class POINT_2D extends BaseStruct
+{
+   public U64    x =   new U64();
+   public U64    y =   new U64();
+
+   public POINT_2D()
+   {
+       Init();
+   }
+
+   public POINT_2D(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public POINT_2D(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iPOINT_2D);
+       Name = "POINT_2D";
+       Field = new BaseField[2];
+
+       Field[0] = new BaseField("x", x);
+       Field[1] = new BaseField("y", y);
+   }
+}

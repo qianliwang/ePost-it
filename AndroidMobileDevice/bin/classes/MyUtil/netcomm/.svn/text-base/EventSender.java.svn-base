@@ -1,0 +1,25 @@
+package MyUtil.netcomm;
+
+import java.net.*;
+import java.io.*;
+
+import MyUtil.datatype.*;
+
+public abstract class EventSender extends StructuredDataSender
+{
+    public EventSender(Connection cnt, int type)
+    {
+        super(cnt, type); 
+    }
+	
+    // used by an initiator to request a remote machine to start a StructuredDataReceiver
+    public EventSender(String ServerIP, int PortNum, int myID, int type)
+    {
+    	super(ServerIP, PortNum, myID, type);
+    }
+    
+    public boolean Report(BaseStruct bs)
+    {
+    	return Send(bs);
+    }
+}

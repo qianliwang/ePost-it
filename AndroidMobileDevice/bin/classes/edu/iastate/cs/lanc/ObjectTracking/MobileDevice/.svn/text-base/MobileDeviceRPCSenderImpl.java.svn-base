@@ -1,0 +1,167 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice;
+
+import edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO.*;
+import MyUtil.datatype.*;
+import MyUtil.jstruct.*;
+import MyUtil.netcomm.*;
+import java.nio.ByteBuffer;
+
+public class MobileDeviceRPCSenderImpl extends RPCSender
+{
+	boolean cntValid = true;
+	
+	public MobileDeviceRPCSenderImpl (String serverIP, int serverPort, int myID)
+	{
+		super(serverIP, serverPort, myID, NETCOMM_CONST.MOBILE_DEVICE_RPC_SENDER);
+	}
+
+	public int RequestDID(String email, String phoneNumber)
+	{
+		if (!isValid()) reStart();
+		
+		if (!isValid()) 
+		{
+			DEBUG.println("RequestID.fails.");
+			return -1;
+		}
+
+		REQUEST_DID tmp = new REQUEST_DID();
+	
+		tmp.id.setValue(-1);		
+		BaseType.setValue(tmp.email, email);
+		BaseType.setValue(tmp.phoneNumber, phoneNumber);
+		
+		// now ready to execute
+		//DEBUG.println("RPCSender.RequestDID.i: " + tmp.toString());
+		System.out.println("RPCSender.RequestDID.i: " + tmp.toString());
+		Execute(tmp);
+		System.out.println("RPCSender.RequestDID.o: " + tmp.toString());
+		//DEBUG.println("RPCSender.RequestDID.o: " + tmp.toString());
+        
+		// this is just for debugging. should be taken out
+		//myStatus.setID(tmp.id.getValue());
+		System.out.println("\n===================" + tmp.id.getValue() + "\n");
+		
+		if (!isValid())
+		{
+			DEBUG.println("RequestDID.failed.");
+		}
+		
+		return tmp.id.getValue();
+	}
+	
+	public boolean RequestResidentDomain(MobileDeviceStatus myStatus)
+	{
+		System.out.println("RequestResidentDomain called");
+		
+		if (!isValid()) reStart();
+		if (!isValid()) 
+		{
+			DEBUG.println("RequestResidentDomain reStart fails.");
+			return false;
+		}
+		
+		REQUEST_RESIDENT_DOMAIN tmp = new REQUEST_RESIDENT_DOMAIN();
+		
+		// set id
+		tmp.id.setValue(myStatus.getMyID());
+		
+		// set zone
+		tmp.zone.shape.setValue(myStatus.getMyZone().getRegionShape());
+		tmp.zone.centerX.setValue(BaseType.toByteArray(myStatus.getMyZone().getCenterX()));
+		tmp.zone.centerY.setValue(BaseType.toByteArray(myStatus.getMyZone().getCenterY()));
+		tmp.zone.radius.setValue(BaseType.toByteArray(myStatus.getMyZone().getRadius()));
+		tmp.zone.upperX.setValue(BaseType.toByteArray(myStatus.getMyZone().getUpperX()));
+		tmp.zone.upperY.setValue(BaseType.toByteArray(myStatus.getMyZone().getUpperY()));
+		tmp.zone.lowerX.setValue(BaseType.toByteArray(myStatus.getMyZone().getLowerX()));
+		tmp.zone.lowerY.setValue(BaseType.toByteArray(myStatus.getMyZone().getLowerY()));
+
+		// set load
+		tmp.load.setValue(myStatus.getMyLoad());
+		
+		// set location. Note the the input is double
+		tmp.location.x.setValue(BaseType.toByteArray(myStatus.getMyLocation().getX()));
+		tmp.location.y.setValue(BaseType.toByteArray(myStatus.getMyLocation().getY()));
+		tmp.location.z.setValue(BaseType.toByteArray(myStatus.getMyLocation().getZ()));
+		tmp.location.t.setValue(BaseType.toByteArray(myStatus.getMyLocation().getT()));
+		
+		// set location update policy
+		tmp.policy.periodicUpdate.setValue(myStatus.getMyLocationUpdatePolicy().getUpdatePolicy());
+		tmp.policy.timeDuration.setValue(myStatus.getMyLocationUpdatePolicy().getTimeDuration());
+		
+		// set faked domain value. not necessary, but good for debug
+		tmp.domain.shape.setValue(myStatus.getMyDomain().getRegionShape());
+		tmp.domain.centerX.setValue(BaseType.toByteArray(myStatus.getMyDomain().getCenterX()));
+		tmp.domain.centerY.setValue(BaseType.toByteArray(myStatus.getMyDomain().getCenterY()));
+		tmp.domain.radius.setValue(BaseType.toByteArray(myStatus.getMyDomain().getRadius()));
+		tmp.domain.upperX.setValue(BaseType.toByteArray(myStatus.getMyDomain().getUpperX()));
+		tmp.domain.upperY.setValue(BaseType.toByteArray(myStatus.getMyDomain().getUpperY()));
+		tmp.domain.lowerX.setValue(BaseType.toByteArray(myStatus.getMyDomain().getLowerX()));
+		tmp.domain.lowerY.setValue(BaseType.toByteArray(myStatus.getMyDomain().getLowerY()));		
+
+		//System.out.println("CommandID:1,\nmyID:"+myStatus.getMyID()+",\nmyZone:"+myStatus.getMyZone().getCenterX()+","+myStatus.getMyZone().getCenterY()+","+myStatus.getMyZone().getRadius()+",\nMYLoad:"+myStatus.getMyLoad());
+		
+		// now ready to execute
+		DEBUG.println("RPCSender.execution before: " + tmp.toString());
+		DEBUG.println("myID = " + myStatus.getMyID());
+		Execute(tmp);
+		DEBUG.println("RPCSender.execution after: " + tmp.toString());
+		
+		if (!isValid()) 
+		{
+			DEBUG.println("RequestResidentDomain. fails");
+		}
+		else
+		{
+			// now put the data back to myStatus
+			myStatus.getMyDomain().setRegionShape(tmp.domain.shape.getValue());
+			myStatus.getMyDomain().setCenterX(tmp.domain.centerX.getDoubleValue());
+			myStatus.getMyDomain().setCenterY(tmp.domain.centerY.getDoubleValue());
+			myStatus.getMyDomain().setRadius(tmp.domain.radius.getDoubleValue());
+			myStatus.getMyDomain().setUpperX(tmp.domain.upperX.getDoubleValue());
+			myStatus.getMyDomain().setUpperY(tmp.domain.upperY.getDoubleValue());
+			myStatus.getMyDomain().setLowerX(tmp.domain.lowerX.getDoubleValue());
+			myStatus.getMyDomain().setLowerY(tmp.domain.lowerY.getDoubleValue());
+		}
+
+		return isValid();
+	}
+
+	public boolean UpdateLocation(MobileDeviceStatus myStatus)
+	{
+		if (!isValid()) reStart();
+		
+		if (!isValid()) 
+		{
+			DEBUG.println("UpdateLocation.fails.");
+			return false;
+		}
+
+		UPDATE_TIME_STAMPED_LOCATION tmp = new UPDATE_TIME_STAMPED_LOCATION();
+	
+		tmp.id.setValue(myStatus.getMyID());
+		
+		tmp.x.setValue(BaseType.toByteArray(myStatus.getMyLocation().getX()));
+		tmp.y.setValue(BaseType.toByteArray(myStatus.getMyLocation().getY()));
+		tmp.z.setValue(BaseType.toByteArray(myStatus.getMyLocation().getZ()));
+		tmp.t.setValue(myStatus.getMyLocation().getT());
+		
+		// now ready to execute
+		//DEBUG.println("RPCSender.UpdateLocation.i: " + tmp.toString());
+		Execute(tmp);
+		//DEBUG.println("RPCSender.UpdateLocation.o: " + tmp.toString());
+        
+		// this is just for debugging. should be taken out
+		myStatus.getMyLocation().setX(tmp.x.getDoubleValue());
+		myStatus.getMyLocation().setY(tmp.y.getDoubleValue());
+		myStatus.getMyLocation().setZ(tmp.z.getDoubleValue());
+		myStatus.getMyLocation().setT(tmp.t.getValue());
+		
+		if (!isValid())
+		{
+			DEBUG.println("UpdateLocation.failed.");
+		}
+		
+		return cntValid;
+	}
+}

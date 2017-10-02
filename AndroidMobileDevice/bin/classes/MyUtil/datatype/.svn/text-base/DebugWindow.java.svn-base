@@ -1,0 +1,57 @@
+//package ct.debug;
+package MyUtil.datatype;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class DebugWindow extends JFrame
+{
+    static JTextArea DebugMsg = null;
+
+    public DebugWindow()
+    {
+        DebugMsg = new JTextArea(40, 50);
+
+        getContentPane().add(DebugMsg);
+
+        setTitle("Debug Window");
+        resize(300, 200);
+    }
+
+    public static void Print(String x)
+    {
+        if (DEBUG.getEnableConsolePrint())
+        {
+            //System.out.print(x);
+        }
+
+        if (DebugMsg != null)
+        {
+            DebugMsg.append(x);
+        }
+    }
+
+    public static void Println(String x)
+    {
+        if (DEBUG.getEnableConsolePrint())
+        {
+            //System.out.println(x);
+        }
+
+        if (DebugMsg != null)
+        {
+            DebugMsg.append(x);
+            DebugMsg.append("\n");
+        }
+    }
+
+    public boolean handleEvent(Event evt)
+    {
+        if (evt.id == Event.WINDOW_DESTROY)
+        {
+            dispose();
+        }
+
+        return super.handleEvent(evt);
+    }
+}

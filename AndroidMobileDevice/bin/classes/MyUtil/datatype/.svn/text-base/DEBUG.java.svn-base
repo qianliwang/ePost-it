@@ -1,0 +1,150 @@
+//package ct.debug;
+package MyUtil.datatype;
+
+public class DEBUG
+{
+    private static boolean CommandService             = false;
+    private static boolean EventService               = false;
+    private static boolean CommandServiceConnection   = true;
+    private static boolean Connection                 = false;
+    private static boolean UdpEventListener           = false;
+    private static boolean EventProcessor             = false;
+    
+    private static boolean EnableConsolePrint         = true;
+    private static boolean EnableDebugWindow          = true;
+
+    private static boolean AgentMonitor               = false;
+    private static boolean ConsoleMonitor             = false;
+    private static boolean Agent                      = false;
+
+    private static boolean DebugRemoteExecution       = false;
+    private static boolean DebugAllRemoteExecution    = false;
+
+    private static boolean RE_DEBUGGING               = false;
+    private static int	counter = 0;
+
+    static public void setDebug(boolean b)
+    {
+        CommandService             = b;
+        CommandServiceConnection   = b;
+        Connection                 = b;
+        UdpEventListener           = b;
+        EventProcessor             = b;
+
+        EnableConsolePrint         = b;
+        EnableDebugWindow          = b;
+
+        AgentMonitor               = b;
+        ConsoleMonitor             = b;
+        Agent                      = b;
+    }
+
+    static public void enableRemoteExecutionDebugging()
+    {
+        RE_DEBUGGING = true;
+    }
+
+    static public boolean remoteExecutionDebuggingEnabled()
+    {
+        return RE_DEBUGGING;
+    }
+
+    static public void setDebugRemoteExecution(boolean b)
+    {
+        DebugRemoteExecution = b;
+    }
+
+    static public void setDebugAllRemoteExecution(boolean b)
+    {
+        DebugAllRemoteExecution = b;
+    }
+
+    static public boolean getDebugRemoteExecution()
+    {
+        return DebugRemoteExecution;
+    }
+
+    static public boolean getDebugAllRemoteExecution()
+    {
+        return DebugAllRemoteExecution;
+    }
+
+    static public boolean getCommandService()
+    {
+        return CommandService;
+    }
+
+    static public boolean getEventService()
+    {
+        return EventService;
+    }
+
+    static public boolean getCommandServiceConnection()
+    {
+        return CommandServiceConnection;
+    }
+
+    static public boolean getConnection()
+    {
+        return Connection;
+    }
+
+    static public boolean getUdpEventListener()
+    {
+        return UdpEventListener;
+    }
+
+    static public boolean getEventProcessor()
+    {
+        return EventProcessor;
+    }
+
+    static public boolean getEnableConsolePrint()
+    {
+        return EnableConsolePrint;
+    }
+
+    static public boolean getEnableDebugWindow()
+    {
+        return EnableDebugWindow;
+    }
+
+    static public boolean getAgentMonitor()
+    {
+        return AgentMonitor;
+    }
+
+    static public boolean getConsoleMonitor()
+    {
+        return ConsoleMonitor;
+    }
+
+    static public boolean getAgent()
+    {
+        return Agent;
+    }
+    
+    static public void println(String comment, byte b[])
+    {
+    	System.out.println(comment);
+    	
+    	for (int i=0; i<b.length; i++)
+    	{
+    		System.out.print(b[i] + " ");
+    	}
+    	
+    	System.out.println("");
+    }
+
+	public static void print(String s) 
+	{
+		counter++;
+		System.out.print(s + ":" + counter);		
+	}
+
+	public static void println(String s) 
+	{
+		counter++;
+		System.out.println(s + ":" + counter);		
+	}
+}

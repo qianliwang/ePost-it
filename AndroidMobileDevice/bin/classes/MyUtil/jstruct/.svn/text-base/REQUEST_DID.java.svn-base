@@ -1,0 +1,37 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class REQUEST_DID extends BaseStruct
+{
+   public U32    id =   new U32();
+   public U8    email[] =   U8.CreateArray(64);
+   public U8    phoneNumber[] =   U8.CreateArray(24);
+
+   public REQUEST_DID()
+   {
+       Init();
+   }
+
+   public REQUEST_DID(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public REQUEST_DID(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iREQUEST_DID);
+       Name = "REQUEST_DID";
+       Field = new BaseField[3];
+
+       Field[0] = new BaseField("id", id);
+       Field[1] = new BaseField("email", email);
+       Field[2] = new BaseField("phoneNumber", phoneNumber);
+   }
+}

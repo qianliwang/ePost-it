@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+ 
+    <ImageView
+        android:id="@+id/photoMessageImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/photo_message"
+        android:layout_marginRight="5dp" />
+ 
+    <TextView
+        android:id="@+id/photoText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/photo_message"
+        android:textColor="#FFF" 
+        android:layout_marginTop="8dp"
+        android:textSize="25sp"
+        android:layout_toRightOf="@+id/photoMessageImage"/>
+ 
+    <ImageView
+        android:id="@+id/voiceMessageImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/voice_message"
+        android:layout_marginRight="5dp" 
+        android:layout_below="@id/photoMessageImage"/>
+ 
+    <TextView
+        android:id="@+id/voiceText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/voice_message"
+        android:textColor="#FFF" 
+        android:textSize="25sp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/photoText"
+        android:layout_toRightOf="@id/voiceMessageImage"/>
+    <ImageView
+        android:id="@+id/textMessageImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/text_message"
+        android:layout_marginRight="5dp" 
+        android:layout_below="@id/voiceMessageImage"/>
+ 
+    <TextView
+        android:id="@+id/textText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_message"
+        android:textColor="#FFF" 
+        android:layout_marginTop="10dp"
+        android:textSize="25sp"
+        android:layout_below="@id/voiceText"
+        android:layout_toRightOf="@id/textMessageImage"/>
+    
+    <EditText 
+        android:id="@+id/editTextTextMessage"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:inputType = "textShortMessage"
+        android:layout_below="@id/textMessageImage"
+        />
+</RelativeLayout>

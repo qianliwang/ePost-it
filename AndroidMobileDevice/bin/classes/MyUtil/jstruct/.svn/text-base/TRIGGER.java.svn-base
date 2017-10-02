@@ -1,0 +1,35 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class TRIGGER extends BaseStruct
+{
+   public U8    inOut =   new U8();
+   public U8    direction =   new U8();
+
+   public TRIGGER()
+   {
+       Init();
+   }
+
+   public TRIGGER(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public TRIGGER(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iTRIGGER);
+       Name = "TRIGGER";
+       Field = new BaseField[2];
+
+       Field[0] = new BaseField("inOut", inOut);
+       Field[1] = new BaseField("direction", direction);
+   }
+}

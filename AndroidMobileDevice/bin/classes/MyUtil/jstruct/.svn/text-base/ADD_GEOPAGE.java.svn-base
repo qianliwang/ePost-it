@@ -1,0 +1,39 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class ADD_GEOPAGE extends BaseStruct
+{
+   public U32    id =   new U32();
+   public REGION    region =   new REGION();
+   public TRIGGER    trigger =   new TRIGGER();
+   public U8    URL[] =   U8.CreateArray(255);
+
+   public ADD_GEOPAGE()
+   {
+       Init();
+   }
+
+   public ADD_GEOPAGE(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public ADD_GEOPAGE(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iADD_GEOPAGE);
+       Name = "ADD_GEOPAGE";
+       Field = new BaseField[4];
+
+       Field[0] = new BaseField("id", id);
+       Field[1] = new BaseField("region", region);
+       Field[2] = new BaseField("trigger", trigger);
+       Field[3] = new BaseField("URL", URL);
+   }
+}

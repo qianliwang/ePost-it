@@ -1,0 +1,195 @@
+//package ct.datatype;
+package MyUtil.datatype;
+//import ct.debug.*;
+
+public class U8 extends BaseType
+{
+    public U8()
+    {
+        super(1);
+        init();
+    }
+
+    public U8(long i)
+    {
+        super(1);
+        init();
+        setValue(i);
+    }
+
+    public U8(char c)
+    {
+        super(1);
+        init();
+        setValue(c);
+    }
+
+    public U8(byte b[])
+    {
+        super(4);
+        init();
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i];
+        }
+    }
+
+    private void init()
+    {
+        myType = DATATYPE_CONST.U8;
+    }
+
+    public boolean setValue(long i)
+    {
+        Buffer[0] = (byte) i;
+
+        return true;
+    }
+
+    public boolean setValue(char c)
+    {
+        Buffer[0] = (byte) c;
+
+        return true;
+    }
+
+    public long toLong()
+    {
+        return (long) BaseType.toUnsignedByte(Buffer[0]);
+    }
+
+    public static long toLong(byte b)
+    {
+        return (long) BaseType.toUnsignedByte(b);
+    }
+
+    public static long toLong(U8[] u8array)
+    {
+        if(u8array.length > 8)return 0;//long cannot represent this
+
+        long longNum = 0;
+
+        for(int i=0; i < u8array.length; i++)
+        {
+            long intermediate = (long)(Math.pow(256, i) * u8array[i].toLong());
+            longNum += intermediate;
+        }
+        return longNum;
+    }
+
+    public char toChar()
+    {
+        return (char) Buffer[0];
+    }
+
+    public String toString()
+    {
+        String ret = "" + toLong();
+
+        return ret;
+    }
+
+    public static String toString(U8[] s)
+    {
+        String ret = "";
+
+        for (int i=0; i<s.length; i++)
+        {
+            ret = ret + s[i].toString() + " ";
+        }
+
+        return ret;
+    }
+
+    public static String toString(byte[] b)
+    {
+        String ret = "";
+
+        for (int i=0; i<b.length; i++)
+        {
+            ret = ret + b[i] + " ";
+        }
+
+        return ret;
+    }
+
+    public static String toString(ByteArray b)
+    {
+        return toString(b.getBuffer());
+    }
+
+    public static U8[] CreateArray(int item)
+    {
+        U8[] tempArray = new U8[item];
+
+        for (int i=0; i<tempArray.length; i++)
+        {
+            tempArray[i] = new U8(0);
+        }
+
+        return tempArray;
+    }
+
+    public static void setValue(U8 u[], byte b[])
+    {
+        if (u == null || b == null) return;
+
+        int item = u.length;
+        if ( item > b.length )
+        {
+            item = b.length;
+        }
+
+        for (int i=0; i<item; i++)
+        {
+            u[i].Buffer[0] = b[i];
+        }
+    }
+
+    public void setValue(String v)
+    {
+        if (v != null)
+        {
+            long longV = Long.parseLong(v, 10);
+
+            setValue(longV);
+        }
+    }
+
+    public static void setValue(U8[] u, String v)
+    {
+        setValue(u, v, ' ');
+    }
+
+    public static void setValue(U8[] u, String v, char parser)
+    {
+        String[] iV = stringParser(v, parser);
+        int i;
+
+        for (i=0; i<u.length; i++)
+        {
+            u[i].setValue(0);
+        }
+
+        for (i=0; i<u.length && i<iV.length; i++)
+        {
+            u[i].setValue(iV[i]);
+        }
+    }
+
+    public static U8[] setValue(U8[] u, long num)
+    {
+        if(u.length > 8) return u; //array size too great for type long
+        for(int i=0; i < u.length; i++)
+        {
+            u[i].setValue(num);
+            num = num >>> 8; //unsigned right shift to next byte
+        }
+        return u;
+    }
+
+	public byte getValue() 
+	{
+        return Buffer[0];
+	}
+}

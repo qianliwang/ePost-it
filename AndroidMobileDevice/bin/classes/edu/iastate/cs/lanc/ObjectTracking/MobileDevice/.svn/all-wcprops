@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/MobileDevice/!svn/ver/37/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice
+END
+MobileDevice.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/MobileDevice/!svn/ver/62/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/MobileDevice.java
+END
+MobileDeviceEventSenderImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/MobileDevice/!svn/ver/31/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/MobileDeviceEventSenderImpl.java
+END
+MobileDeviceRPCSenderImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/MobileDevice/!svn/ver/59/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/MobileDeviceRPCSenderImpl.java
+END
+MobileDeviceEventReceiverImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/MobileDevice/!svn/ver/53/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/MobileDeviceEventReceiverImpl.java
+END

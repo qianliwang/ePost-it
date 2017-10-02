@@ -1,0 +1,105 @@
+package MyUtil.netcomm;
+
+import java.io.*;
+import java.util.*;
+
+public abstract class EventProcessor extends Thread
+{
+    private int                 Head = 0;
+    private int                 End = 0;
+    private Object[]            Event = new Object[NETCOMM_CONST.MAX_EVENTS_NUM];
+    private boolean             terminated = false;
+    private boolean             isProcessing = false;
+
+    public void run()
+    {
+        while(!terminated)
+        {
+            while (Head != End)
+            {
+                isProcessing = true;
+                if (Head == Event.length - 1)
+                {
+                    Head = 0;
+                }
+                else
+                {
+                    Head = Head + 1;
+                }
+
+                try
+                {
+                    ProcessEvent(Event[Head]);
+                }
+                catch (Exception e)
+                {
+                    //System.out.println("EventProcessor.run().cannot process this event:" + BaseType.toHexString(Event[Head]));
+                }
+
+                // reset null
+                Event[Head] = null;
+            }
+
+            try
+            {
+                wait();
+            }
+            catch (InterruptedException e)
+            {
+                System.out.println("EventProcessor.waitForSignal()." + e);
+            }
+        }
+    }
+
+    // ***********IMPORTANT********** 
+    // if ProcessEvent is very slow, Deposit() may overwrite the oldest event
+/*    
+    synchronized public void Deposit(byte[] EventPkg)
+    {
+        isProcessing = false;
+        if (End == Event.length - 1)
+        {
+            Event[0] = EventPkg;
+            End = 0;
+        }
+        else
+        {
+            Event[End + 1] = EventPkg;
+            End = End + 1;
+        }
+
+        if (!isProcessing)
+        {
+        	notify();
+        }
+    }
+*/
+    synchronized public void Deposit(Object eventObject)
+    {
+        isProcessing = false;
+        if (End == Event.length - 1)
+        {
+            Event[0] = eventObject;
+            End = 0;
+        }
+        else
+        {
+            Event[End + 1] = eventObject;
+            End = End + 1;
+        }
+
+        if (!isProcessing)
+        {
+        	notify();
+        }
+    }
+
+    synchronized public void Terminate()
+    {
+        terminated = true;
+
+        notify();
+    }
+
+    protected abstract void ProcessEvent(Object eventObject);
+}

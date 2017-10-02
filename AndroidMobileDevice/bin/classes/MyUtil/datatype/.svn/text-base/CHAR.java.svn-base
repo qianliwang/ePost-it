@@ -1,0 +1,146 @@
+//package ct.datatype;
+package MyUtil.datatype;
+//import ct.debug.*;
+
+public class CHAR extends BaseType
+{
+    public CHAR()
+    {
+        super(1);
+        init();
+    }
+
+    public CHAR(char c)
+    {
+        super(1);
+        init();
+        setValue(c);
+    }
+
+    public CHAR(byte b[])
+    {
+        super(1);
+        init();
+
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i];
+        }
+    }
+
+    private void init()
+    {
+        myType = DATATYPE_CONST.CHAR;
+        Buffer[0] = 0;
+    }
+
+    public boolean setValue(char c)
+    {
+        Buffer[0] = (byte) c;
+
+        return true;
+    }
+
+    public void setValue(String v)
+    {
+        try
+        {
+            byte[] b = v.getBytes();
+
+            b = v.getBytes("UnicodeLittleUnmarked");
+
+            setValue(b);
+        }
+        catch (Exception e)
+        {
+            System.out.println("CHAR.setValue(String)." + e);
+        }
+    }
+
+    public static void setValue(CHAR w[], String v)
+    {
+        try
+        {
+            for (int i=0; i<w.length; i++)
+            {
+                w[i].setValue((char) 0);
+            }
+
+            byte[] b = v.getBytes();
+
+            for (int i=0; i<w.length && i<b.length; i++)
+            {
+                w[i].setValue(b, i);
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("CHAR.setValue(CHAR[], String)." + e);
+        }
+    }
+
+    public char toChar()
+    {
+        return (char) Buffer[0];
+    }
+
+    public String toString()
+    {
+        String ret = "";
+
+        if (Buffer[0] == 0)
+        {
+            return ret;
+        }
+
+        ret = new String(Buffer);
+
+        return ret;
+    }
+
+    public static CHAR[] CreateArray(int item)
+    {
+        CHAR[] tempArray = new CHAR[item];
+
+        for (int i=0; i<tempArray.length; i++)
+        {
+            tempArray[i] = new CHAR();
+        }
+
+        return tempArray;
+    }
+
+    public static CHAR[] CreateArray(String v)
+    {
+        byte[] b = v.getBytes();
+
+        return CreateArray(b);
+    }
+
+    public static CHAR[] CreateArray(byte[] b)
+    {
+        CHAR[] tempArray = null;
+
+        tempArray = new CHAR[b.length];
+
+        for (int i=0; i<tempArray.length; i++)
+        {
+            tempArray[i] = new CHAR();
+            tempArray[i].setValue(b, i);
+        }
+
+        return tempArray;
+    }
+
+    public static String toString(CHAR[] w)
+    {
+        String ret = "";
+
+        for (int i=0; i<w.length; i++)
+        {
+            ret = ret + w[i].toString();
+        }
+
+        return ret;
+    }
+}

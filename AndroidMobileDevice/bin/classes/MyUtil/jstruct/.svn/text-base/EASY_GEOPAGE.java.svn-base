@@ -1,0 +1,39 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class EASY_GEOPAGE extends BaseStruct
+{
+   public U64    centerX =   new U64();
+   public U64    centerY =   new U64();
+   public U64    radius  =   new U64();
+   public U8    textMessage[] =   U8.CreateArray(100);
+
+   public EASY_GEOPAGE()
+   {
+       Init();
+   }
+
+   public EASY_GEOPAGE(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public EASY_GEOPAGE(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iEASY_GEOPAGE);
+       Name = "EASY_GEOPAGE";
+       Field = new BaseField[4];
+
+       Field[0] = new BaseField("centerX", centerX);
+       Field[1] = new BaseField("centerY", centerY);
+       Field[2] = new BaseField("radius", radius);
+       Field[3] = new BaseField("textMessage", textMessage);
+   }
+}

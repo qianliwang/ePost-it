@@ -1,0 +1,33 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class BLE_LINK_LOSS extends BaseStruct
+{
+   public U8    blelinkLoss =   new U8();
+
+   public BLE_LINK_LOSS()
+   {
+       Init();
+   }
+
+   public BLE_LINK_LOSS(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public BLE_LINK_LOSS(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iBLE_LINK_LOSS);
+       Name = "BLE_LINK_LOSS";
+       Field = new BaseField[1];
+
+       Field[0] = new BaseField("blelinkLoss", blelinkLoss);
+   }
+}

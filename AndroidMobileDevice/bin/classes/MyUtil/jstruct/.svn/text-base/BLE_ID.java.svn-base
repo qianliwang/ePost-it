@@ -1,0 +1,33 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class BLE_ID extends BaseStruct
+{
+   public U8    bleID[] =   U8.CreateArray(10);
+
+   public BLE_ID()
+   {
+       Init();
+   }
+
+   public BLE_ID(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public BLE_ID(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iBLE_ID);
+       Name = "BLE_ID";
+       Field = new BaseField[1];
+
+       Field[0] = new BaseField("bleID", bleID);
+   }
+}

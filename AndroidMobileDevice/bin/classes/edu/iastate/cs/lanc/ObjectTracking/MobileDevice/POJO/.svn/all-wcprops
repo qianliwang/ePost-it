@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/MobileDevice/!svn/ver/37/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO
+END
+Geopage.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/MobileDevice/!svn/ver/30/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/Geopage.java
+END
+LocationUpdatePolicy.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/MobileDevice/!svn/ver/37/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/LocationUpdatePolicy.java
+END
+GPSLocation.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/MobileDevice/!svn/ver/3/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/GPSLocation.java
+END
+PseudoGPSReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/MobileDevice/!svn/ver/58/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/PseudoGPSReader.java
+END
+GPSReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/MobileDevice/!svn/ver/35/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/GPSReader.java
+END
+TimeStampedLocation.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/MobileDevice/!svn/ver/26/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/TimeStampedLocation.java
+END
+MobileDeviceStatus.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/MobileDevice/!svn/ver/61/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/MobileDeviceStatus.java
+END
+Trigger.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/MobileDevice/!svn/ver/28/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/Trigger.java
+END
+Location.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/MobileDevice/!svn/ver/3/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/Location.java
+END
+Region.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/MobileDevice/!svn/ver/5/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/Region.java
+END
+ObjectServer.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/MobileDevice/!svn/ver/47/src/edu/iastate/cs/lanc/ObjectTracking/MobileDevice/POJO/ObjectServer.java
+END

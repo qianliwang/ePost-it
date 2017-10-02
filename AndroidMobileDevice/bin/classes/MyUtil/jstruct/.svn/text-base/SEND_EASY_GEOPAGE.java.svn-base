@@ -1,0 +1,41 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class SEND_EASY_GEOPAGE extends BaseStruct
+{
+   public U32    id =   new U32();
+   public U64    centerX =   new U64();
+   public U64    centerY =   new U64();
+   public U64    radius  =   new U64();
+   public U8    textMessage[] =   U8.CreateArray(100);
+
+   public SEND_EASY_GEOPAGE()
+   {
+       Init();
+   }
+
+   public SEND_EASY_GEOPAGE(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public SEND_EASY_GEOPAGE(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iSEND_EASY_GEOPAGE);
+       Name = "SEND_EASY_GEOPAGE";
+       Field = new BaseField[5];
+
+       Field[0] = new BaseField("id", id);
+       Field[1] = new BaseField("centerX", centerX);
+       Field[2] = new BaseField("centerY", centerY);
+       Field[3] = new BaseField("radius", radius);
+       Field[4] = new BaseField("textMessage", textMessage);
+   }
+}

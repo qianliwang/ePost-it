@@ -1,0 +1,82 @@
+package MyUtil.netcomm;
+//package ct.netcomm;
+
+//import ct.debug.*;
+//import ct.datatype.*;
+
+import java.net.*;
+import java.io.*;
+
+public class ConnectionReception extends Thread
+{
+    private ServerSocket JavaServer = null;
+    private int ListenPort;
+    private int	CmdCounter = 0;
+    private int	RestartCount = 0;
+
+    public ConnectionReception(int port)
+    {
+        ListenPort = port;
+
+        try
+        {
+            JavaServer = new ServerSocket(ListenPort);
+        }
+        catch (Exception e)
+        {
+            JavaServer = null;
+            System.out.println("Cannot start ConnectionReception. One copy of java server is running.");
+        }
+    }
+
+    public void run()
+    {
+        // wait for the connection
+        for (;;)
+        {
+            try
+            {
+                if (JavaServer != null)
+                {
+                    System.out.println("Ready for RPC connection ...");
+                }
+
+                // self-block until request comes
+                Socket client = JavaServer.accept();
+                client.setTcpNoDelay(true);
+                client.setKeepAlive(true);
+
+                // one request comes
+                System.out.println("Request #" + CmdCounter);
+                CmdCounter++;
+
+                new RPCReceiverConnection(client).start();
+            }
+            catch (Exception e)
+            {
+                JavaServer = null;
+
+                //System.out.println("ConnectionReception fails. " + e);
+                while (JavaServer == null)
+                {
+                    try
+                    {
+                        sleep(10 * 1000);
+
+                        System.out.println("Trying to restart #" + RestartCount);
+                        RestartCount++;
+
+                        JavaServer = new ServerSocket(ListenPort);
+
+                        //System.out.println("ConnectionReception restarted OK");
+                    }
+                    catch (Exception ee)
+                    {
+                        JavaServer = null;
+                        //System.out.println("Cannot restart ConnectionReception. Exception = " + ee);
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,33 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class BLE_CELLPHONE_NO_MATCH extends BaseStruct
+{
+   public U8    deviceNoMatch =   new U8();
+
+   public BLE_CELLPHONE_NO_MATCH()
+   {
+       Init();
+   }
+
+   public BLE_CELLPHONE_NO_MATCH(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public BLE_CELLPHONE_NO_MATCH(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iBLE_CELLPHONE_NO_MATCH);
+       Name = "BLE_CELLPHONE_NO_MATCH";
+       Field = new BaseField[1];
+
+       Field[0] = new BaseField("deviceNoMatch", deviceNoMatch);
+   }
+}

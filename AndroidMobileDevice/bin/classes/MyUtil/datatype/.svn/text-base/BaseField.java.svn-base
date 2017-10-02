@@ -1,0 +1,570 @@
+package MyUtil.datatype;
+
+public class BaseField
+{
+	public String        Name;
+
+    public BaseType      BType = null;
+    public BaseType      BTypeArray[] = null;
+    public BaseStruct    BStruct = null;
+    public BaseStruct    BStructArray[] = null;
+
+    int           Dir = DATATYPE_CONST.DIR_INOUT;
+
+    public BaseField()
+    {
+        Name = null;
+    }
+
+    public BaseField(String name, BaseType bt)
+    {
+        Name            =   name;
+        BType           =   bt;
+    }
+
+    public BaseField(String name, BaseType bta[])
+    {
+        Name            =   name;
+        BTypeArray      =   bta;
+    }
+
+    public BaseField(String name, BaseStruct bs)
+    {
+        Name            =   name;
+        BStruct         =   bs;
+    }
+
+    public BaseField(String name, BaseStruct bsa[])
+    {
+        Name            =   name;
+        BStructArray    =   bsa;
+    }
+
+    public int getSize()
+    {
+        int ret = 0;
+
+        if (BType != null)
+        {
+            ret = BType.getSize();
+        }
+
+        if (BStruct != null)
+        {
+            ret = BStruct.getSize();
+        }
+
+        if (BTypeArray != null)
+        {
+            if (BTypeArray.length != 0)
+            {
+                ret = BTypeArray[0].getSize() * BTypeArray.length;
+            }
+        }
+
+        if (BStructArray != null)
+        {
+            if (BStructArray.length != 0)
+            {
+                ret = BStructArray[0].getSize() * BStructArray.length;
+            }
+        }
+
+        return ret;
+    }
+
+    public int getSize(int dirRequested)
+    {
+        int size = 0;
+
+        if (Dir == dirRequested || Dir == DATATYPE_CONST.DIR_INOUT)
+        {
+            size = getSize();
+        }
+
+        return size;
+    }
+
+    public byte[] toBytes()
+    {
+        byte b[] = new byte[getSize()];
+
+        if (BType != null)
+        {
+            BType.toBytes(b);
+        }
+
+        if (BStruct != null)
+        {
+            BStruct.toBytes(b);
+        }
+
+        if (BTypeArray != null && BTypeArray.length != 0)
+        {
+            int UnitSize = BTypeArray[0].getSize();
+
+            for (int i=0; i< BTypeArray.length; i++)
+            {
+                BTypeArray[i].toBytes(b, UnitSize * i);
+            }
+        }
+
+        if (BStructArray != null && BStructArray.length != 0)
+        {
+            int UnitSize = BStructArray[0].getSize();
+
+            for (int i=0; i< BStructArray.length; i++)
+            {
+                BStructArray[i].toBytes(b, UnitSize * i);
+            }
+        }
+
+        return b;
+    }
+
+    public byte[] toBytes(int dirRequested)
+    {
+        byte b[] = new byte[0];
+
+        if (Dir == dirRequested || Dir == DATATYPE_CONST.DIR_INOUT)
+        {
+            b = toBytes();
+        }
+        return b;
+    }
+
+    public boolean toBytes(byte b[], int offset)
+    {
+        int i;
+        byte temp[] = toBytes();
+
+        for (i=0; i<temp.length && i<(b.length-offset); i++)
+        {
+            b[offset+i] = temp[i];
+        }
+
+        boolean ret = true;
+
+        if (i<temp.length)
+        {
+            ret = false;
+        }
+
+        return ret;
+    }
+
+    public boolean toBytes(int dirRequested, byte b[], int offset)
+    {
+        boolean ret = true;
+
+        if (Dir == dirRequested || Dir == DATATYPE_CONST.DIR_INOUT)
+        {
+            ret = toBytes(b, offset);
+        }
+
+        return ret;
+    }
+
+    public boolean setValue(byte b[])
+    {
+        return setValue(b, 0);
+    }
+
+    public boolean setValue(int dirRequested, byte b[])
+    {
+        boolean ret = true;
+
+        if (Dir == dirRequested || Dir == DATATYPE_CONST.DIR_INOUT)
+        {
+            ret = setValue(b);
+        }
+
+        return ret;
+    }
+
+    public boolean setValue(byte b[], int offset)
+    {
+        boolean ret = false;
+        int i;
+
+        //if (BStruct != null && BStruct.Name.equals("ARRAY"))
+        if (BStruct != null && BStruct instanceof ARRAY)
+        {
+            //System.out.println("ARRAY set value");
+            ((ARRAY) BStruct).setValue(b, offset);
+            return true;
+        }
+
+        //if (BStruct != null && BStruct.Name.equals("OBJECT"))
+        if (BStruct != null && BStruct instanceof OBJECT)
+        {
+            //System.out.println("OBJECT set value");
+            ((OBJECT) BStruct).setValue(b, offset);
+            return true;
+        }
+
+        if (BType != null)
+        {
+            ret = BType.setValue(b, offset);
+        }
+
+        if (BTypeArray != null)
+        {
+            for (i=0; i<BTypeArray.length; i++)
+            {
+                ret = BTypeArray[i].setValue(b, offset);
+                offset = offset + BTypeArray[i].getSize();
+            }
+        }
+
+        if (BStruct != null)
+        {
+            ret = BStruct.setValue(b, offset);
+        }
+
+        if (BStructArray != null)
+        {
+            for (i=0; i<BStructArray.length; i++)
+            {
+                ret = BStructArray[i].setValue(b, offset);
+                offset = offset + BStructArray[i].getSize();
+            }
+        }
+
+        return ret;
+    }
+
+    public boolean setValue(int dirRequested, byte b[], int offset)
+    {
+        boolean ret = true;
+
+        if (Dir == dirRequested || Dir == DATATYPE_CONST.DIR_INOUT)
+        {
+            ret = setValue(b, offset);
+        }
+
+        return ret;
+    }
+
+    public String toString()
+    {
+        String ret = "";
+        int i;
+
+        if (BType != null)
+        {
+        	ret = ((BaseType) BType).toString();
+        }
+
+        if (BTypeArray != null)
+        {
+            ret = BaseType.toString(BTypeArray);
+        }
+
+        if (BStruct != null)
+        {
+            ret = BStruct.toString();
+        }
+
+        if (BStructArray != null)
+        {
+            for (i=0; i<BStructArray.length; i++)
+            {
+                ret = ret + " $ " + BStructArray[i].toString();
+            }
+        }
+
+        return ret;
+    }
+
+    public String toDebugString()
+    {
+        String ret = Name + " = ";
+        int i;
+
+        if (BType != null)
+        {
+            ret = ret + BType.toString();
+        }
+
+        if (BTypeArray != null)
+        {
+            for (i=0; i<BTypeArray.length; i++)
+            {
+                ret = ret + " | " + BTypeArray[i].toString();
+            }
+        }
+
+        if (BStruct != null)
+        {
+            ret = ret + BStruct.toString();
+        }
+
+        if (BStructArray != null)
+        {
+            for (i=0; i<BStructArray.length; i++)
+            {
+                ret = ret + " $ " + BStructArray[i].toString();
+            }
+        }
+
+        return ret;
+    }
+
+    public boolean isBaseType()
+    {
+        boolean ret = false;
+
+        if (BType != null)
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    public boolean isBaseTypeArray()
+    {
+        boolean ret = false;
+
+        if (BTypeArray != null)
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    public boolean isBaseStruct()
+    {
+        boolean ret = false;
+
+        if (BStruct != null)
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    public boolean isBaseStructArray()
+    {
+        boolean ret = false;
+
+        if (BStructArray != null)
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    public String getName()
+    {
+        return Name;
+    }
+
+    public void setValue(String v)
+    {
+        if ( BType != null )
+        {
+            BType.setValue(v);
+            return;
+        }
+
+        if (BTypeArray != null && BTypeArray.length !=0 )
+        {
+            switch ( BTypeArray[0].getType() )
+            {
+                case DATATYPE_CONST.CHAR:
+                {
+                    CHAR.setValue( (CHAR[]) BTypeArray, v);
+                    break;
+                }
+                case DATATYPE_CONST.WCHAR:
+                {
+                    WCHAR.setValue( (WCHAR[]) BTypeArray, v);
+                    break;
+                }
+                case DATATYPE_CONST.S8:
+                {
+                    S8.setValue( (S8[]) BTypeArray, v);
+                    break;
+                }
+                case DATATYPE_CONST.U8:
+                {
+                    U8.setValue( (U8[]) BTypeArray, v);
+                    break;
+                }
+                case DATATYPE_CONST.S16:
+                {
+                    S16.setValue( (S16[]) BTypeArray, v);
+                    break;
+                }
+                case DATATYPE_CONST.U16:
+                {
+                    U16.setValue( (U16[]) BTypeArray, v);
+                    break;
+                }
+                case DATATYPE_CONST.S32:
+                {
+                    S32.setValue( (S32[]) BTypeArray, v);
+                    break;
+                }
+                case DATATYPE_CONST.U32:
+                {
+                    U32.setValue( (U32[]) BTypeArray, v);
+                    break;
+                }
+                default:
+                {
+                    System.out.println("BaseField.setValue(String).unknownBaseType." + BTypeArray[0].getType());
+                }
+            }
+        }
+    }
+
+    public void reset()
+    {
+        if (BStruct != null && BStruct.Name.equals("pArray"))
+        {
+            //System.out.println("ARRAY FOUND");
+            BStruct = (BaseStruct) new ARRAY();
+        }
+
+        if (BStruct != null && BStruct.Name.equals("pObject"))
+        {
+            //System.out.println("OBJECT FOUND");
+            BStruct = (BaseStruct) new OBJECT();
+        }
+
+        if (BType != null)
+        {
+            BType.reset();
+        }
+        else
+        if (BTypeArray != null)
+        {
+            for (int i=0; i<BTypeArray.length; i++)
+            {
+                BTypeArray[i].reset();
+            }
+        }
+        else
+        if (BStruct != null)
+        {
+            BStruct.reset();
+        }
+        else
+        if (BStructArray != null)
+        {
+            for (int i=0; i<BStructArray.length; i++)
+            {
+                BStructArray[i].reset();
+            }
+        }
+    }
+
+    public BaseField Clone()
+    {
+        BaseField curCopy = new BaseField();
+
+        curCopy.Name = new String(Name);
+
+        if (BType != null)
+        {
+            curCopy.BType = BType.Clone();
+        }
+
+        if (BTypeArray != null)
+        {
+            curCopy.BTypeArray = new BaseType[BTypeArray.length];
+
+            for (int i=0; i<BTypeArray.length; i++)
+            {
+                curCopy.BTypeArray[i] = BTypeArray[i].Clone();
+            }
+        }
+
+        if (BStruct != null)
+        {
+            curCopy.BStruct = BStruct.Clone();
+        }
+
+        if (BStructArray != null)
+        {
+            curCopy.BStructArray = new BaseStruct[BStructArray.length];
+
+            for (int i=0; i<BStructArray.length; i++)
+            {
+                curCopy.BStructArray[i] = BStructArray[i].Clone();
+            }
+        }
+
+        return curCopy;
+    }
+
+    public int getMaxNameLength()
+    {
+        int fieldLen = 0;
+
+        if ( BType != null || BTypeArray != null)
+        {
+            return Name.length();
+        }
+        else
+        if ( BStruct != null )
+        {
+            return BStruct.getMaxNameLength();
+        }
+        else
+        if ( BStructArray != null)
+        {
+            return BStructArray[0].getMaxNameLength();
+        }
+
+        return 20;
+    }
+
+    public void setDir(int myDir)
+    {
+        Dir = myDir;
+    }
+
+    public void delete()
+    {
+        Name = null;
+
+        if (BType != null)
+        {
+            BType.delete();
+            BType = null;
+        }
+
+        if (BTypeArray != null)
+        {
+            for (int i=0; i<BTypeArray.length; i++)
+            {
+                BTypeArray[i].delete();
+            }
+
+            BTypeArray = null;
+        }
+
+        if (BStruct != null)
+        {
+            BStruct.delete();
+            BStruct = null;
+        }
+
+        if (BStructArray != null)
+        {
+            for (int i=0; i<BStructArray.length; i++)
+            {
+                BStructArray[i].delete();
+            }
+
+            BStructArray = null;
+        }
+    }
+}

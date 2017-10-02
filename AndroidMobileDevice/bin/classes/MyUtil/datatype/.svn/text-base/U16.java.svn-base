@@ -1,0 +1,144 @@
+//package ct.datatype;
+package MyUtil.datatype;
+//import ct.debug.*;
+
+public class U16 extends BaseType
+{
+    public U16()
+    {
+        super(2);
+        init();
+    }
+
+    public U16(long i)
+    {
+        super(2);
+        init();
+        setValue(i);
+    }
+
+    public U16(char c)
+    {
+        super(2);
+        init();
+        setValue(c);
+    }
+
+    public U16(byte b[])
+    {
+        super(2);
+        init();
+
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i];
+        }
+    }
+
+    private void init()
+    {
+        myType = DATATYPE_CONST.U16;
+    }
+
+    public boolean setValue(long i)
+    {
+        i = i % ( (long) 256 * 256 );
+
+        if (i<0)
+        {
+            i = 256*256 + i;
+        }
+
+        Buffer[0] = (byte) (i % 256);
+        Buffer[1] = (byte) (i / 256);
+
+        return true;
+    }
+
+    public boolean setValue(char c)
+    {
+        Buffer[0] = (byte) c;
+        Buffer[1] = 0;
+
+        return true;
+    }
+
+    public long toLong()
+    {
+        int low8 = BaseType.toUnsignedByte(Buffer[0]);
+        int high8 = BaseType.toUnsignedByte(Buffer[1]);
+
+        return (long) (low8 + high8 * 256);
+    }
+
+    public char toChar()
+    {
+        return (char) Buffer[0];
+    }
+
+    public String toString()
+    {
+        String ret = "" + toLong();
+
+        return ret;
+    }
+
+    public static String toString(U16[] s)
+    {
+        String ret = "";
+
+        for (int i=0; i<s.length; i++)
+        {
+            ret = ret + s[i].toString() + " ";
+        }
+
+        return ret;
+    }
+
+    public static U16[] CreateArray(int item)
+    {
+        U16[] tempArray = new U16[item];
+
+        for (int i=0; i<tempArray.length; i++)
+        {
+            tempArray[i] = new U16(0);
+        }
+
+        return tempArray;
+    }
+
+    public void setValue(String v)
+    {
+        if (v != null)
+        {
+            v = v.trim();
+            
+            long longV = Long.parseLong(v, 10);
+
+            setValue(longV);
+        }
+    }
+
+    public static void setValue(U16[] u, String v)
+    {       
+        setValue(u, v, ' ');
+    }
+
+    public static void setValue(U16[] u, String v, char parser)
+    {
+        int i;
+
+        for (i=0; i<u.length; i++)
+        {
+            u[i].setValue(0);
+        }
+
+
+        String[] iV = stringParser(v, parser);
+
+        for (i=0; i<u.length && i<iV.length; i++)
+        {
+            u[i].setValue(iV[i]);
+        }
+    }
+}

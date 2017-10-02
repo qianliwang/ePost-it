@@ -1,0 +1,33 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class BLE_BATTERY_LEVEL extends BaseStruct
+{
+   public U8    batteryLevel =   new U8();
+
+   public BLE_BATTERY_LEVEL()
+   {
+       Init();
+   }
+
+   public BLE_BATTERY_LEVEL(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public BLE_BATTERY_LEVEL(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iBLE_BATTERY_LEVEL);
+       Name = "BLE_BATTERY_LEVEL";
+       Field = new BaseField[1];
+
+       Field[0] = new BaseField("batteryLevel", batteryLevel);
+   }
+}

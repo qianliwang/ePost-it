@@ -1,0 +1,282 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO;
+
+import java.util.*;
+
+import android.os.Handler;
+
+import MyUtil.datatype.BaseType;
+import MyUtil.datatype.DEBUG;
+import MyUtil.jstruct.REQUEST_RESIDENT_DOMAIN;
+
+public class MobileDeviceStatus {
+
+	private static MobileDeviceStatus instance = null;
+	
+	private int myID;
+	private Region myZone;
+	private int myLoad;
+	private Region myDomain;
+	private ArrayList<Geopage> myGeopageList;
+	private TimeStampedLocation myLocation;
+
+	private LocationUpdatePolicy myLocationUpdatePolicy;
+
+	private String myCurServerIP;
+	private int myCurServerPort;
+	
+	private int myBatteryStatus;
+	
+	private Handler middleHandler;
+	
+	
+	public int getMyBatteryStatus() {
+		return myBatteryStatus;
+	}
+
+
+	public void setMyBatteryStatus(int myBatteryStatus) {
+		this.myBatteryStatus = myBatteryStatus;
+	}
+
+
+	public MobileDeviceStatus() {
+		
+		myID = -1;
+		myZone = new Region();
+		myLoad = 0;
+		myLocation = new TimeStampedLocation(0, 0, 0, 0);
+		myLocationUpdatePolicy = new LocationUpdatePolicy((byte)1);
+		myGeopageList = new ArrayList<Geopage>();
+		myDomain = new Region();
+		myCurServerIP = "";
+		myCurServerPort = 0;
+		myBatteryStatus = -1;
+	}
+
+	
+//	public MobileDeviceStatus(int myID,Region myZone,int myLoad,TimeStampedLocation myLocation,LocationUpdatePolicy myLocationUpdatePolicy) {
+//
+//		this.myID = myID;
+//		this.myZone = myZone;
+//		this.myLoad = myLoad;
+//		this.myLocation = myLocation;
+//		this.myLocationUpdatePolicy = myLocationUpdatePolicy;
+//		
+//		myGeopageList = new ArrayList<Geopage>();
+//		myDomain = new Region();
+//		
+//	}
+
+	public Handler getMiddleHandler() {
+		return middleHandler;
+	}
+
+	public void setMiddleHandler(Handler middleHandler) {
+		this.middleHandler = middleHandler;
+	}
+
+	
+	public static MobileDeviceStatus getInstance(){
+		
+		if(instance == null){
+			instance = new MobileDeviceStatus();
+		}
+		return instance;
+	}
+
+	public int getMyID() {
+		return myID;
+	}
+
+	public void setMyID(int myID) {
+		this.myID = myID;
+	}
+
+	public Region getMyZone() {
+		return myZone;
+	}
+
+	public void setMyZone(Region myZone) {
+		this.myZone.setRegionShape(myZone.getRegionShape());
+		this.myZone.setCenterX(myZone.getCenterX());
+		this.myZone.setCenterY(myZone.getCenterY());
+		this.myZone.setRadius(myZone.getRadius());
+		this.myZone.setUpperX(myZone.getUpperX());
+		this.myZone.setUpperY(myZone.getUpperY());
+		this.myZone.setLowerX(myZone.getLowerX());
+		this.myZone.setLowerY(myZone.getLowerY());
+	}
+
+	public int getMyLoad() {
+		return myLoad;
+	}
+
+	public void setMyLoad(int myLoad) {
+		this.myLoad = myLoad;
+	}
+
+	public Region getMyDomain() {
+		return myDomain;
+	}
+
+	public void setMyDomain(Region myDomain) {
+		this.myDomain.setRegionShape(myDomain.getRegionShape());
+		this.myDomain.setCenterX(myDomain.getCenterX());
+		this.myDomain.setCenterY(myDomain.getCenterY());
+		this.myDomain.setRadius(myDomain.getRadius());
+		this.myDomain.setUpperX(myDomain.getUpperX());
+		this.myDomain.setUpperY(myDomain.getUpperY());
+		this.myDomain.setLowerX(myDomain.getLowerX());
+		this.myDomain.setLowerY(myDomain.getLowerY());
+	}
+
+	public ArrayList<Geopage> getMyGeopageList() {
+		return myGeopageList;
+	}
+	
+	public void emptyGeopageList()
+	{
+		myGeopageList.clear();
+	}
+
+	public void setMyGeopageList(ArrayList<Geopage> myGeopageList) {
+		this.myGeopageList = myGeopageList;
+	}
+
+	public void addGeopage(Geopage g)
+	{
+		myGeopageList.add(g);
+	}
+	
+	public TimeStampedLocation getMyLocation() {
+		return myLocation;
+	}
+
+	public void setMyLocation(TimeStampedLocation myLocation) {
+		this.myLocation.setX(myLocation.getX());
+		this.myLocation.setY(myLocation.getY());
+		this.myLocation.setZ(myLocation.getZ());
+		this.myLocation.setT(myLocation.getT());
+	}
+
+	public LocationUpdatePolicy getMyLocationUpdatePolicy() {
+		return myLocationUpdatePolicy;
+	}
+
+	public void setMyLocationUpdatePolicy(LocationUpdatePolicy myLocationUpdatePolicy) {
+		this.myLocationUpdatePolicy.setUpdatePolicy(myLocationUpdatePolicy.getUpdatePolicy());
+		this.myLocationUpdatePolicy.setTimeDuration(myLocationUpdatePolicy.getTimeDuration());
+	}
+
+	public void checkGeopageTrigger(TimeStampedLocation curLocation) 
+	{
+		// now check if any geopage needs to be downloaded
+		// note that myLocation is still old location while curLocation is the latest
+		double x = curLocation.getX();
+		double y = curLocation.getY();
+		
+		
+		double geoLowerX = 0;
+		double geoUpperX = 0;
+		double geoLowerY = 0;
+		double geoUpperY = 0;
+		
+		for(Geopage g:myGeopageList){
+			geoLowerX = g.getRegion().getLowerX();
+			geoUpperX = g.getRegion().getUpperX();
+			geoLowerY = g.getRegion().getLowerY();
+			geoUpperY = g.getRegion().getUpperY();
+			
+			if(x<geoUpperX&&x>geoLowerX&&y<geoUpperY&&y>geoLowerY){
+				
+				//Open specific URL of geoPage.
+				
+			}
+		}
+	}
+
+	public boolean moveOutOfResidentDomain(TimeStampedLocation curLocation) 
+	{
+		// now check if the device moves out of its resident domain
+		// note that myLocation is still old location while curLocation is the latest
+
+		double locX = curLocation.getX();
+		double locY = curLocation.getY();
+		double domainLowerX = myDomain.getLowerX();
+		double domainUpperX = myDomain.getUpperX();
+		double domainLowerY = myDomain.getLowerY();
+		double domainUpperY = myDomain.getUpperY();
+		
+		if(locX<domainUpperX&&locX>domainLowerX&&locY<domainUpperY&&locY>domainLowerY){
+			return false;
+		}else {
+			return true;
+		}		
+	}
+	
+	public void setValue(REQUEST_RESIDENT_DOMAIN tmp)
+	{
+		getMyDomain().setRegionShape(tmp.domain.shape.getValue());
+		getMyDomain().setCenterX(tmp.domain.centerX.getDoubleValue());
+		getMyDomain().setCenterY(tmp.domain.centerY.getDoubleValue());
+		getMyDomain().setRadius(tmp.domain.radius.getDoubleValue());
+		getMyDomain().setUpperX(tmp.domain.upperX.getDoubleValue());
+		getMyDomain().setUpperY(tmp.domain.upperY.getDoubleValue());
+		getMyDomain().setLowerX(tmp.domain.lowerX.getDoubleValue());
+		getMyDomain().setLowerY(tmp.domain.lowerY.getDoubleValue());
+			
+		// set id
+		setMyID(tmp.id.getValue());
+		
+		// set zone
+		getMyZone().setRegionShape(tmp.zone.shape.getValue());
+		getMyZone().setCenterX(tmp.zone.centerX.getDoubleValue());
+		getMyZone().setCenterY(tmp.zone.centerY.getDoubleValue());
+		getMyZone().setRadius(tmp.zone.radius.getDoubleValue());
+		getMyZone().setUpperX(tmp.zone.upperX.getDoubleValue());
+		getMyZone().setUpperY(tmp.zone.upperY.getDoubleValue());
+		getMyZone().setLowerX(tmp.zone.lowerX.getDoubleValue());
+		getMyZone().setLowerY(tmp.zone.lowerY.getDoubleValue());
+		
+		// set load
+		setMyLoad(tmp.load.getValue());
+		
+		// set location. Note the the input is double
+		getMyLocation().setX(tmp.location.x.getDoubleValue());
+		getMyLocation().setY(tmp.location.y.getDoubleValue());
+		getMyLocation().setZ(tmp.location.z.getDoubleValue());
+		getMyLocation().setT(tmp.location.t.getValue());
+		
+		// set location update policy
+		getMyLocationUpdatePolicy().setUpdatePolicy(tmp.policy.periodicUpdate.getValue());
+		getMyLocationUpdatePolicy().setTimeDuration(tmp.policy.timeDuration.getValue());
+		
+		// set domain value. not necessary, but good for debug
+		getMyDomain().setRegionShape(tmp.domain.shape.getValue());
+		getMyDomain().setCenterX(tmp.domain.centerX.getDoubleValue());
+		getMyDomain().setCenterY(tmp.domain.centerY.getDoubleValue());
+		getMyDomain().setRadius(tmp.domain.radius.getDoubleValue());
+		getMyDomain().setUpperX(tmp.domain.upperX.getDoubleValue());
+		getMyDomain().setUpperY(tmp.domain.upperY.getDoubleValue());
+		getMyDomain().setLowerX(tmp.domain.lowerX.getDoubleValue());
+		getMyDomain().setLowerY(tmp.domain.lowerY.getDoubleValue());
+	}
+
+	public String getMyCurServerIP() {
+		return myCurServerIP;
+	}
+
+	public void setMyCurServerIP(String myCurServerIP) {
+		this.myCurServerIP = myCurServerIP;
+	}
+
+	public int getMyCurServerPort() {
+		return myCurServerPort;
+	}
+
+	public void setMyCurServerPort(int myCurServerPort) {
+		this.myCurServerPort = myCurServerPort;
+	}
+	
+	
+}

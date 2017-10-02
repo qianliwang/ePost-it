@@ -1,0 +1,40 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO;
+
+public class ObjectServer {
+
+	private static ObjectServer instance = null;
+
+	private String IP;
+	private int port;
+
+	protected ObjectServer() {
+
+	}
+
+	public static ObjectServer getInstance() {
+
+		if (instance == null) {
+
+			instance = new ObjectServer();
+		}
+
+		return instance;
+	}
+
+	public String getIP() {
+		return IP;
+	}
+
+	public void setIP(String iP) {
+		IP = iP;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+}

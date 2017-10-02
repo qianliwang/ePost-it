@@ -1,0 +1,35 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class REPORT_BLE_ID extends BaseStruct
+{
+   public U32    id =   new U32();
+   public U8    bleID[] =   U8.CreateArray(10);
+
+   public REPORT_BLE_ID()
+   {
+       Init();
+   }
+
+   public REPORT_BLE_ID(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public REPORT_BLE_ID(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iREPORT_BLE_ID);
+       Name = "REPORT_BLE_ID";
+       Field = new BaseField[2];
+
+       Field[0] = new BaseField("id", id);
+       Field[1] = new BaseField("bleID", bleID);
+   }
+}

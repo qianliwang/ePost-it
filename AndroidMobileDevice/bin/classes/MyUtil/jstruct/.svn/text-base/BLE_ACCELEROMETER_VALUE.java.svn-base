@@ -1,0 +1,37 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class BLE_ACCELEROMETER_VALUE extends BaseStruct
+{
+   public U8    x_axis =   new U8();
+   public U8    y_axis =   new U8();
+   public U8    z_axis =   new U8();
+
+   public BLE_ACCELEROMETER_VALUE()
+   {
+       Init();
+   }
+
+   public BLE_ACCELEROMETER_VALUE(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public BLE_ACCELEROMETER_VALUE(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iBLE_ACCELEROMETER_VALUE);
+       Name = "BLE_ACCELEROMETER_VALUE";
+       Field = new BaseField[3];
+
+       Field[0] = new BaseField("x_axis", x_axis);
+       Field[1] = new BaseField("y_axis", y_axis);
+       Field[2] = new BaseField("z_axis", z_axis);
+   }
+}

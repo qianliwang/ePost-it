@@ -1,0 +1,24 @@
+package MyUtil.netcomm;
+
+import java.io.*;
+import java.net.*;
+
+import MyUtil.datatype.DEBUG;
+
+public abstract class EventReceiver extends StructuredDataReceiver
+{
+    protected abstract void Process(byte[] pkgBuffer);
+
+    // used upon requested by a remote RPCSender
+    public EventReceiver(Connection cnt, int receiverType)
+    {
+        super(cnt, receiverType);
+        System.out.println("starting a new EventReceiver upon a remote request");
+    }
+
+    // used as an initiator to ask a remote machine to start a RPCSender
+    public EventReceiver(String ServerIP, int PortNum, int myID, int receiverType)
+    {
+        super(ServerIP, PortNum, myID, receiverType);
+    }
+}

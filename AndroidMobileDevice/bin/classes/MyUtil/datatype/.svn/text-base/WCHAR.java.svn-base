@@ -1,0 +1,266 @@
+//package ct.datatype;
+package MyUtil.datatype;
+
+//import ct.debug.*;
+
+public class WCHAR extends BaseType
+{
+    public WCHAR()
+    {
+        super(2);
+        init();
+    }
+
+    public WCHAR(char c)
+    {
+        super(2);
+        init();
+        setValue(c);
+    }
+
+    public WCHAR(byte b[])
+    {
+        super(2);
+        init();
+
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i];
+        }
+    }
+
+    private void init()
+    {
+        myType = DATATYPE_CONST.WCHAR;
+        Buffer[0] = 0;
+        Buffer[1] = 0;
+    }
+
+    public boolean setValue(char c)
+    {
+        Buffer[0] = (byte) c;
+        Buffer[1] = 0;
+
+        return true;
+    }
+
+    public void setValue(String v)
+    {
+        try
+        {
+            // byte[] b = v.getBytes("UnicodeLittleUnmarked"); // I.E.
+            byte[] b = v.getBytes();
+
+            setValue( (char) b[0]);
+        }
+        catch (Exception e)
+        {
+            System.out.println("WCHAR.setValue(String)." + e);
+        }
+    }
+
+    public static void setValue(WCHAR w[], String v)
+    {
+        try
+        {
+            for (int i=0; i<w.length; i++)
+            {
+                w[i].setValue((char) 0);
+            }
+
+            //byte[] b = v.getBytes("UnicodeLittleUnmarked"); // I.E.
+            byte[] b = v.getBytes();
+
+            //for (int i=0; i<w.length && i<b.length/2; i++) // I.E.
+            for (int i=0; i<w.length && i<b.length; i++)
+            {
+                //w[i].setValue(b, i*2); // I.E.
+                w[i].Buffer[0] = b[i];
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("WCHAR.setValue(w[], String)." + e);
+        }
+    }
+
+    public static void setValue(ByteArray ba, String v)
+    {
+        try
+        {
+            byte[] w = ba.getBuffer();
+            for (int i=0; i<w.length; i++)
+            {
+                w[i] = 0;
+            }
+
+            byte[] b = v.getBytes();
+            for (int i=0; i<w.length/2 && i<b.length; i++)
+            {
+                w[2*i] = b[i];
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("WCHAR.setValue(ByteArray, String)." + e);
+        }
+    }
+
+    public char toChar()
+    {
+        return (char) Buffer[0];
+    }
+
+    public String toString()
+    {
+        String ret = "";
+
+        if (Buffer[0] == 0 && Buffer[1] == 0)
+        {
+            return ret;
+        }
+
+        try
+        {
+            //ret = new String(Buffer, "UnicodeLittle"); //I.E.
+            ret = new String(Buffer, 0, 1);
+        }
+        catch(Exception e)
+        {
+            System.out.println("WCHAR.toString()." + e);
+        }
+
+        return ret;
+    }
+
+    public static WCHAR[] CreateArray(int item)
+    {
+        WCHAR[] tempArray = new WCHAR[item];
+
+        for (int i=0; i<tempArray.length; i++)
+        {
+            tempArray[i] = new WCHAR();
+        }
+
+        return tempArray;
+    }
+
+    public static WCHAR[] CreateArray(String v)
+    {
+        WCHAR[] tempArray = null;
+
+        try
+        {
+            //byte[] b = v.getBytes("UnicodeLittleUnmarked"); // I.E.
+            byte[] b = v.getBytes();
+
+            //tempArray = new WCHAR[b.length/2]; // I.E.
+            tempArray = new WCHAR[b.length];
+
+            for (int i=0; i<tempArray.length; i++)
+            {
+                tempArray[i] = new WCHAR();
+                //tempArray[i].setValue(b, i*2); // I.E.
+                tempArray[i].Buffer[0] = b[i];
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("WCHAR.CreateArray(String)." + e);
+        }
+
+        return tempArray;
+    }
+
+    public static WCHAR[] CreateArray(byte[] b)
+    {
+        WCHAR[] tempArray = null;
+
+        try
+        {
+            tempArray = new WCHAR[b.length/2];
+
+            for (int i=0; i<tempArray.length; i++)
+            {
+                tempArray[i].setValue(b, i*2);
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println("WCHAR.CreateArray(byte[])." + e);
+        }
+
+        return tempArray;
+    }
+
+    public static int getUniCodeStringLength(WCHAR[] w)
+    {
+        for (int i=0; i<w.length; i++)
+        {
+            if (w[i].isNULL())
+            {
+                return i;
+            }
+        }
+
+        return w.length;
+    }
+
+    public static int getUniCodeStringLength(ByteArray ba)
+    {
+        byte[] buf = ba.getBuffer();
+        for (int i=0; i<buf.length; i=i+2)
+        {
+            if (buf[i] == 0 && buf[i+1] ==0)
+            {
+                return (i+1)/2;
+            }
+        }
+
+        return buf.length/2;
+    }
+
+    public static String toString(WCHAR[] w)
+    {
+        int stringLength = getUniCodeStringLength(w);
+        StringBuffer ret = new StringBuffer(stringLength);
+
+        for (int i=0; i<stringLength; i++)
+        {
+            ret.append(w[i].toChar());
+        }
+
+        return ret.toString();
+    }
+
+    public static String toString(ByteArray ba)
+    {
+        int stringLength = getUniCodeStringLength(ba);
+        StringBuffer ret = new StringBuffer(stringLength);
+
+        byte[] buf = ba.getBuffer();
+        for (int i=0; i<buf.length; i=i+2)
+        {
+            if (buf[i] == 0 && buf[i+1] ==0)
+            {
+                return ret.toString();
+            }
+
+            ret.append((char) buf[i]);
+        }
+
+        return ret.toString();
+    }
+
+    public boolean isNULL()
+    {
+        boolean ret = false;
+
+        if ( Buffer[0] == 0 && Buffer[1] == 0 )
+        {
+            ret = true;
+        }
+
+        return ret;
+    }
+}

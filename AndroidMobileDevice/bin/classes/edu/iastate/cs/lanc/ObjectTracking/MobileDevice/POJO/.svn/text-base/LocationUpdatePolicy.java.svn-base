@@ -1,0 +1,79 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO;
+
+public class LocationUpdatePolicy {
+
+	private static LocationUpdatePolicy instance = null;
+	
+	public static byte ON_DEMAND = 0;
+	public static byte PERIODIC = 1;
+	
+	private byte updatePolicyType; // if 1, periodically update; 0, on-demand
+	private int timeDuration; // if periodically, period is valid, in millisecond\
+	private int updateDeviation = 0;
+	
+	protected LocationUpdatePolicy(){
+
+	}
+	
+	public static LocationUpdatePolicy getInstance(){
+		
+		if(instance == null){
+			instance = new LocationUpdatePolicy();
+		}
+		return instance;
+	}
+	
+	
+	public LocationUpdatePolicy(byte onDemand)
+	{
+		this.updatePolicyType = onDemand;
+	}
+
+	public LocationUpdatePolicy(byte periodicUpdate, int timeDuration, int updateDeviation)
+	{
+		this.updatePolicyType = periodicUpdate;
+		this.timeDuration = timeDuration;
+		this.updateDeviation = updateDeviation;
+	}
+	
+	//For the client wants to change the locationUpdatePolicy;
+	//public void setUpdatePolicy(byte onDemand){}
+	//void setUpdatePolicy(byte periodicUpdate, int timeDuration){}
+
+	public void setUpdatePolicy(byte onDemand){
+		
+		updatePolicyType = onDemand;
+		
+	}
+	public void setUpdatePolicy(byte periodicUpdate, int timeDuration){
+		
+
+		this.updatePolicyType = periodicUpdate;
+		this.timeDuration = timeDuration;
+	}
+	
+	public byte getUpdatePolicy() {
+		return updatePolicyType;
+	}
+	
+//
+//	public void setPeriodicUpdate(byte periodicUpdate) {
+//		this.periodicUpdate = periodicUpdate;
+//	}
+
+	public int getTimeDuration() {
+		return timeDuration;
+	}
+	public int getUpdateDeviation(){
+		return updateDeviation;
+	}
+
+	public void setTimeDuration(int timeDuration) {
+		this.timeDuration = timeDuration;
+	}
+	public void setUpdateDeviation(int updateDeviation) {
+		this.updateDeviation = updateDeviation;
+	}
+	
+	
+}

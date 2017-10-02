@@ -1,0 +1,81 @@
+10
+
+dir
+42
+https://yingcai_server.cs.iastate.edu/svn/RPC/src/MyUtil
+https://yingcai_server.cs.iastate.edu/svn/RPC
+
+
+
+2012-06-20T22:38:22.096511Z
+42
+yingcai
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+f35b8bd1-c9e1-204a-86fb-e0001e26364a
+
+c2j.java
+file
+
+
+
+
+2012-06-20T22:38:57.000000Z
+af1f640f4c7c14326456879b018d029d
+2012-02-07T03:34:38.320944Z
+6
+yingcai
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+16788
+
+datatype
+dir
+
+header
+dir
+
+jstruct
+dir
+
+netcomm
+dir
+
+rpctest
+dir
+
+
+
+delete
+

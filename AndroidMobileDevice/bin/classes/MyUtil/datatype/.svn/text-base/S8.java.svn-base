@@ -1,0 +1,128 @@
+//package ct.datatype;
+package MyUtil.datatype;
+//import ct.debug.*;
+
+public class S8 extends BaseType
+{
+    public S8()
+    {
+        super(1);
+        init();
+    }
+
+    public S8(long i)
+    {
+        super(1);
+        init();
+        setValue(i);
+    }
+
+    public S8(char c)
+    {
+        super(1);
+        init();
+        setValue(c);
+    }
+
+    public S8(byte b[])
+    {
+        super(1);
+        init();
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i];
+        }
+    }
+
+    private void init()
+    {
+        myType = DATATYPE_CONST.S8;
+    }
+
+    public boolean setValue(long i)
+    {
+        Buffer[0] = (byte) i;
+
+        return true;
+    }
+
+    public boolean setValue(char c)
+    {
+        Buffer[0] = (byte) c;
+
+        return true;
+    }
+
+    public long toLong()
+    {
+        return (long) Buffer[0];
+    }
+
+    public char toChar()
+    {
+        return (char) Buffer[0];
+    }
+
+    public static S8[] CreateArray(int item)
+    {
+        S8[] tempArray = new S8[item];
+
+        for (int i=0; i<tempArray.length; i++)
+        {
+            tempArray[i] = new S8(0);
+        }
+
+        return tempArray;
+    }
+
+    public void setValue(String v)
+    {
+        if (v != null)
+        {
+            long longV = Long.parseLong(v, 10);
+
+            setValue(longV);
+        }
+    }
+
+    public static void setValue(S8[] s, String v)
+    {
+        setValue(s, v, ' ');
+    }
+
+    public static void setValue(S8[] s, String v, char parser)
+    {
+        int i;
+
+        for (i=0; i<s.length; i++)
+        {
+            s[i].setValue(0);
+        }
+
+        String[] iV = stringParser(v, parser);
+
+        for (i=0; i<s.length && i<iV.length; i++)
+        {
+            s[i].setValue(iV[i]);
+        }
+    }
+
+    public String toString()
+    {
+        String ret = "" + Buffer[0];
+
+        return ret;
+    }
+
+    public static String toString(S8[] s)
+    {
+        String ret = "";
+
+        for (int i=0; i<s.length; i++)
+        {
+            ret = ret + s[i].toString() + " ";
+        }
+
+        return ret;
+    }
+}

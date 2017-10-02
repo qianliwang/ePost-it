@@ -1,0 +1,253 @@
+//package ct.datatype;
+package MyUtil.datatype;
+
+import java.nio.ByteBuffer;
+//import ct.debug.*;
+
+public class U32 extends BaseType
+{
+    public U32()
+    {
+        super(4);
+        init();
+    }
+
+    public U32(int i)
+    {
+        super(4);
+        init();
+        setValue(i);
+    }
+
+    public U32(char c)
+    {
+        super(4);
+        init();
+        setValue(c);
+    }
+
+    public U32(byte b[])
+    {
+        super(4);
+        init();
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i];
+        }
+    }
+
+    public U32(byte b[], int offset)
+    {
+        super(4);
+        init();
+        for (int i=0; i<b.length && i<Buffer.length; i++)
+        {
+            Buffer[i] = b[i+offset];
+        }
+    }
+
+    private void init()
+    {
+        myType = DATATYPE_CONST.U32;
+    }
+
+    /*
+    public boolean setValue(long i)
+    {
+        i = i % ( (long) 256 * 256 * 256 * 256 );
+
+        if (i < 0)
+        {
+            i = (long) 256 * 256 * 256 * 256 + (long) i;
+        }
+
+        long high16 = (long) (i / (256 * 256));
+        long low16 = (long) (i % (256 * 256));
+
+        Buffer[0] = (byte) (low16 % 256);
+        Buffer[1] = (byte) (low16 / 256);
+
+        Buffer[2] = (byte) (high16 % 256);
+        Buffer[3] = (byte) (high16 / 256);
+
+        return true;
+    }
+*/
+
+    public boolean setValue(int v)
+    {
+        Buffer[0] = (byte)(v>>>24);
+        Buffer[1] = (byte)(v>>>16);
+        Buffer[2] = (byte)(v>>>8);
+        Buffer[3] = (byte)v;
+        
+        return true;
+    }
+    
+    public boolean setValue(char c)
+    {
+        Buffer[0] = (byte) c;
+        Buffer[1] = 0;
+        Buffer[2] = 0;
+        Buffer[3] = 0;
+
+        return true;
+    }
+
+    public int getValue()
+    {
+    	/*
+        int low16 = (int) BaseType.toUnsignedByte(Buffer[0]) + (int) BaseType.toUnsignedByte(Buffer[1]) * 256;
+        int high16 = (int) BaseType.toUnsignedByte(Buffer[2]) + (int) BaseType.toUnsignedByte(Buffer[3]) * 256;
+
+        return (int) (high16 * 256 * 256 + low16);
+        */
+    	
+    	return ByteBuffer.wrap(Buffer).getInt(0);
+    }
+
+    public long toLong()
+    {
+        long low16 = (long) BaseType.toUnsignedByte(Buffer[0]) + (long) BaseType.toUnsignedByte(Buffer[1]) * 256;
+        long high16 = (long) BaseType.toUnsignedByte(Buffer[2]) + (long) BaseType.toUnsignedByte(Buffer[3]) * 256;
+
+        return (long) (high16 * 256 * 256 + low16);
+    }
+
+    public char toChar()
+    {
+        return (char) Buffer[0];
+    }
+
+    public String toString()
+    {
+        String ret = "" + toLong();
+
+        return ret;
+    }
+
+    public static String toString(U32 low, U32 high)
+    {
+        return U64.toString(low, high);
+    }
+
+    public static String toString(U32[] s)
+    {
+        String ret = "";
+
+        for (int i=0; i<s.length; i++)
+        {
+            ret = ret + s[i].toString() + " ";
+        }
+
+        return ret;
+    }
+
+    public static long toLong(byte[] v)
+    {
+        U32 temp = new U32(v);
+
+        return temp.toLong();
+    }
+
+    public boolean toBoolean()
+    {
+        long l = this.toLong();
+        if(l == 0) return false;
+        return true;
+    }
+
+    public static U32[] CreateArray(int item)
+    {
+        U32[] tempArray = new U32[item];
+
+        for (int i=0; i<tempArray.length; i++)
+        {
+            tempArray[i] = new U32(0);
+        }
+
+        return tempArray;
+    }
+
+    /*
+    public void setValue(String v)
+    {
+        if (v != null)
+        {
+            v = v.trim();
+
+            long longV = Long.parseLong(v, 10);
+
+            setValue(longV);
+        }
+    }
+*/
+    public void setValue(boolean b)
+    {
+        if (b)
+        {
+            setValue(1);
+        }
+        else
+        {
+            setValue(0);
+        }
+    }
+
+    public static void setValue(U32[] u, String v)
+    {
+        setValue(u, v, ' ');
+    }
+
+    public static void setValue(U32[] u, String v, char parser)
+    {
+        int i;
+
+        for (i=0; i<u.length; i++)
+        {
+            u[i].setValue(0);
+        }
+
+
+        String[] iV = stringParser(v, parser);
+
+        for (i=0; i<u.length && i<iV.length; i++)
+        {
+            u[i].setValue(iV[i]);
+        }
+    }
+
+    public void setValue(U32 u)
+    {
+        for (int i=0; i<Buffer.length; i++)
+        {
+            Buffer[i] = u.Buffer[i];
+        }
+    }
+
+    public BaseType Clone()
+    {
+        U32 curCopy = new U32();
+
+        if (Buffer != null)
+        {
+            curCopy.Buffer = new byte[Buffer.length];
+            for (int i=0; i<Buffer.length; i++)
+            {
+                curCopy.Buffer[i] = Buffer[i];
+            }
+        }
+
+        curCopy.myType = myType;
+
+        return (BaseType) curCopy;
+    }
+    
+    public static String toIPString(int ipAddress)
+    {
+        long ip = (ipAddress < 0) ? (long)Math.pow(2,32)+ipAddress : ipAddress;
+        
+        String addr =  String.valueOf((ip >> 24)+"_"+((ip >> 16) & 255)+"_"+((ip >> 8) & 255)+"_"+(ip & 255));
+        return addr;
+    }
+}

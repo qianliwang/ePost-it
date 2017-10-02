@@ -1,0 +1,43 @@
+package MyUtil.jstruct;
+import MyUtil.datatype.*;
+ 
+public class REQUEST_RESIDENT_DOMAIN extends BaseStruct
+{
+   public U32    id =   new U32();
+   public REGION    zone =   new REGION();
+   public U32    load =   new U32();
+   public TIME_STAMPED_LOCATION    location =   new TIME_STAMPED_LOCATION();
+   public LOCATION_UPDATE_POLICY    policy =   new LOCATION_UPDATE_POLICY();
+   public REGION    domain =   new REGION();
+
+   public REQUEST_RESIDENT_DOMAIN()
+   {
+       Init();
+   }
+
+   public REQUEST_RESIDENT_DOMAIN(byte b[])
+   {
+       Init();
+       setValue(b);
+   }
+
+   public REQUEST_RESIDENT_DOMAIN(byte b[], int offset)
+   {
+       Init();
+       setValue(b, offset);
+   }
+
+   void Init()
+   {
+       ID.setValue(DATATYPE_CONST.iREQUEST_RESIDENT_DOMAIN);
+       Name = "REQUEST_RESIDENT_DOMAIN";
+       Field = new BaseField[6];
+
+       Field[0] = new BaseField("id", id);
+       Field[1] = new BaseField("zone", zone);
+       Field[2] = new BaseField("load", load);
+       Field[3] = new BaseField("location", location);
+       Field[4] = new BaseField("policy", policy);
+       Field[5] = new BaseField("domain", domain);
+   }
+}

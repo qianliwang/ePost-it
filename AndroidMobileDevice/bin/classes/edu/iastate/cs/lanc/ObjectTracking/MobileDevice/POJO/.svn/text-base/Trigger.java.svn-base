@@ -1,0 +1,37 @@
+package edu.iastate.cs.lanc.ObjectTracking.MobileDevice.POJO;
+
+public class Trigger {
+
+	public static byte MOVEIN = 0;
+	public static byte MOVEOUT = 1;
+	
+	private byte inOut;     // 0: movein; 1: moveout;
+    private byte direction; // if direction = 0, no direction. 1: south; 2: north; 3: west; 4: east;
+    // byte speed
+    
+    public Trigger() { }
+    
+    public Trigger(byte inout, byte direction){
+    	this.inOut = inout;
+    	this.direction = direction;
+    }
+   
+    public Trigger(byte inout){
+    	this.inOut = inout;
+    }
+    
+	public byte getInOut() {
+		return inOut;
+	}
+	public void setInOut(byte inOut) {
+		this.inOut = inOut;
+	}
+	public byte getDirection() {
+		return direction;
+	}
+	public void setDirection(byte direction) {
+		this.direction = direction;
+	}
+    
+    
+}
